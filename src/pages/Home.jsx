@@ -53,7 +53,7 @@ function Home() {
 
         </section>
 
-        {/* Two */}
+        {/* two */}
         <section id="two" className="wrapper style3 fade-up">
           <div className="inner">
             <h2>What we do</h2>
