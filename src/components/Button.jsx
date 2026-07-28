@@ -1,34 +1,27 @@
-import React from "react";
+import { Link } from 'react-router-dom'
 
 function Button({
-  targetId = "two",
-  text = "Learn more",
-  className = "button",
+  to = '/generic',
+  text = 'Conocer más',
+  className = 'button',
 }) {
-  const handleClick = () => {
-    const section = document.getElementById(targetId);
-
-    if (section) {
-      section.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
+  const isSectionLink = to.startsWith('#')
 
   return (
     <ul className="actions">
       <li>
-        <button
-          type="button"
-          className={className}
-          onClick={handleClick}
-        >
-          {text}
-        </button>
+        {isSectionLink ? (
+          <a href={to} className={className}>
+            {text}
+          </a>
+        ) : (
+          <Link to={to} className={className}>
+            {text}
+          </Link>
+        )}
       </li>
     </ul>
-  );
+  )
 }
 
-export default Button;
+export default Button

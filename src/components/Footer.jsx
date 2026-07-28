@@ -1,16 +1,23 @@
-import React from 'react';
-
-function Footer({ footerClass = "wrapper alt" }) {
+function Footer({ footerClass = 'wrapper alt' }) {
   return (
     <footer id="footer" className={footerClass}>
       <div className="inner">
         <ul className="menu">
-          <li>&copy; Untitled. All rights reserved.</li>
-          <li>Design: <a href="#">S.A.R.A Team</a></li>
+          <li>&copy; 2026 S.A.R.A. Todos los derechos reservados.</li>
+          <li>
+            Diseño base:{' '}
+            <a
+              href="https://html5up.net"
+              target="_blank"
+              rel="noreferrer"
+            >
+              HTML5 UP
+            </a>
+          </li>
         </ul>
       </div>
     </footer>
-  );
+  )
 }
 
-export default Footer;
+export default Footer
