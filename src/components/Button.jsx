@@ -1,13 +1,31 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
 
-function Button({ to = "/generic", text = "Learn more", className = "button" }) {
+function Button({
+  targetId = "two",
+  text = "Learn more",
+  className = "button",
+}) {
+  const handleClick = () => {
+    const section = document.getElementById(targetId);
+
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
     <ul className="actions">
       <li>
-        <Link to={to} className={className}>
+        <button
+          type="button"
+          className={className}
+          onClick={handleClick}
+        >
           {text}
-        </Link>
+        </button>
       </li>
     </ul>
   );

@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import SpotlightCard from '../components/SpotlightCard';
 import Button from '../components/Button'; // <-- Importamos el componente Button
+import pic01 from "../images/pic01.jpg";
 
 function Home() {
   return (
@@ -25,7 +26,7 @@ function Home() {
           
           {/* Tarjeta 1 con su propio texto en el botón */}
           <SpotlightCard 
-            imageSrc="images/pic01.jpg"
+            imageSrc={pic01}
             imagePosition="center center"
             title="BLa Bla BLa"
             description="PAKWDKAKWDKAWDLAWKDJ."
@@ -35,7 +36,7 @@ function Home() {
 
           {/* Tarjeta 2 */}
           <SpotlightCard 
-            imageSrc="images/pic02.jpg"
+            imageSrc={pic01}
             imagePosition="top center"
             title="SEGUNDA SECCIÓN"
             description="Aquí va otro texto diferente para la segunda tarjeta del proyecto S.A.R.A."
@@ -43,7 +44,7 @@ function Home() {
             buttonText="Más información"
           />
           <SpotlightCard 
-            imageSrc="images/pic02.jpg"
+            imageSrc={pic01}
             imagePosition="top center"
             title="SEGUNDA SECCIÓN"
             description="Aquí va otro texto diferente para la segunda tarjeta del proyecto S.A.R.A."
