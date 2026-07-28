@@ -1,5 +1,5 @@
 import FeatureCard from "./FeatureCard";
-import "./Features.css";
+import "../assets/css/Features.css";
 
 function Features() {
   return (
