@@ -4,7 +4,7 @@ import Footer from '../components/Footer';
 import SpotlightCard from '../components/SpotlightCard';
 import Button from '../components/Button'; // <-- Importamos el componente Button
 import pic01 from "../images/pic01.jpg";
-
+import Features from "../components/Features/Features";
 function Home() {
   return (
     <>
@@ -53,17 +53,29 @@ function Home() {
           />
 
         </section>
+{/* two */}
+<section id="two" className="wrapper style3 fade-up">
+  <div className="inner">
 
-        {/* two */}
-        <section id="two" className="wrapper style3 fade-up">
-          <div className="inner">
-            <h2>What we do</h2>
-            <p>We are a team of professionals dedicated to providing the best services.</p>
-            
-            {/* Reutilizando el botón fuera de las tarjetas con otro texto */}
-            <Button to="/elements" text="Ver todos los elementos" />
-          </div>
-        </section>
+    <h2>¿Qué hacemos?</h2>
+
+    <p>
+      Somos un equipo comprometido con el desarrollo de S.A.R.A., una plataforma
+      enfocada en brindar apoyo y soluciones tecnológicas mediante una interfaz
+      intuitiva, segura y accesible para todos los usuarios.
+    </p>
+
+    <Features />
+
+    <div className="actions" style={{ marginTop: "3rem" }}>
+      <Button
+        to="/elements"
+        text="Ver todos los elementos"
+      />
+    </div>
+
+  </div>
+</section>
 
       </div>
       <Footer footerClass="wrapper style1-alt" />
