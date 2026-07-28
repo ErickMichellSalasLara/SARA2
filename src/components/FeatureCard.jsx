@@ -1,4 +1,4 @@
-import "./Features.css";
+import "../assets/css/Features.css";
 
 function FeatureCard({ icon, title, description }) {
   return (
