@@ -1,26 +1,20 @@
+import React from 'react';
+
 function Sidebar() {
   return (
     <section id="sidebar">
       <div className="inner">
-        <nav aria-label="Navegación principal">
+        <nav>
           <ul>
-            <li>
-              <a href="#intro">Inicio</a>
-            </li>
-            <li>
-              <a href="#one">Quiénes somos</a>
-            </li>
-            <li>
-              <a href="#two">Qué hacemos</a>
-            </li>
-            <li>
-              <a href="#three">Contacto</a>
-            </li>
+            <li><a href="#intro">Welcome</a></li>
+            <li><a href="#one">Who we are</a></li>
+            <li><a href="#two">What we do</a></li>
+            <li><a href="#three">Get in touch</a></li>
           </ul>
         </nav>
       </div>
     </section>
-  )
+  );
 }
 
-export default Sidebar
+export default Sidebar;

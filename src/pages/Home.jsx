@@ -20,6 +20,11 @@ function Home() {
               accesos, reservas, préstamos y visitantes.
             </p>
             <Button
+              to="/login"
+              text="Iniciar sesión"
+              className="button primary"
+            />
+            <Button
               to="#one"
               text="Descubrir el proyecto"
               className="button scrolly"
