@@ -1,13 +1,15 @@
 :root {
-  --sara-red: #b21f3d;
-  --sara-red-light: #df4963;
-  --sara-red-dark: #641326;
-  --sara-wine: #3f0d19;
+  --sara-purple: #7c3aed;
+  --sara-purple-light: #a855f7;
+  --sara-purple-dark: #4c1d95;
+  --sara-deep-purple: #24103f;
+  --sara-violet: #5b21b6;
+
   --sara-white: #ffffff;
-  --sara-soft-white: #fff7f8;
-  --sara-gray: #6e6467;
-  --sara-border: #eadadd;
-  --sara-shadow: rgba(67, 10, 26, 0.25);
+  --sara-soft-white: #faf7ff;
+  --sara-gray: #706879;
+  --sara-border: #e4d8f2;
+  --sara-shadow: rgba(47, 16, 80, 0.28);
 }
 
 .login-page {
@@ -17,18 +19,24 @@
   place-items: center;
   padding: 40px 24px;
   overflow: hidden;
+
   background:
     radial-gradient(
       circle at 15% 20%,
-      rgba(223, 73, 99, 0.3),
+      rgba(168, 85, 247, 0.32),
       transparent 30%
     ),
     radial-gradient(
       circle at 90% 85%,
-      rgba(178, 31, 61, 0.25),
+      rgba(124, 58, 237, 0.28),
       transparent 32%
     ),
-    linear-gradient(135deg, #230711 0%, #541121 48%, #8c1933 100%);
+    linear-gradient(
+      135deg,
+      #160b29 0%,
+      #32145c 48%,
+      #5b21b6 100%
+    );
 }
 
 .login-decoration {
@@ -72,12 +80,17 @@
   flex-direction: column;
   padding: 48px;
   color: var(--sara-white);
+
   background:
     linear-gradient(
-      rgba(68, 8, 25, 0.92),
-      rgba(118, 18, 42, 0.94)
+      rgba(30, 12, 54, 0.94),
+      rgba(76, 29, 149, 0.94)
     ),
-    linear-gradient(135deg, var(--sara-wine), var(--sara-red));
+    linear-gradient(
+      135deg,
+      var(--sara-deep-purple),
+      var(--sara-purple)
+    );
 }
 
 .login-information::after {
@@ -114,7 +127,7 @@
   padding: 7px 14px;
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 999px;
-  color: #ffd9e0;
+  color: #eadcff;
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.12rem;
@@ -155,7 +168,7 @@
   border: 1px solid rgba(255, 255, 255, 0.23);
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.08);
-  color: #ffdce3;
+  color: #eadcff;
   font-size: 0.72rem;
   font-weight: 700;
 }
@@ -198,17 +211,19 @@
   color: var(--sara-white);
   font-size: 1.35rem;
   font-weight: 800;
+
   background: linear-gradient(
     135deg,
-    var(--sara-red-light),
-    var(--sara-red-dark)
+    var(--sara-purple-light),
+    var(--sara-purple-dark)
   );
-  box-shadow: 0 10px 25px rgba(178, 31, 61, 0.25);
+
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.28);
 }
 
 .login-form-header p {
   margin: 0 0 3px;
-  color: var(--sara-red);
+  color: var(--sara-purple);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.08rem;
@@ -262,9 +277,9 @@
 }
 
 .login-field input:focus {
-  border-color: var(--sara-red);
+  border-color: var(--sara-purple);
   background-color: var(--sara-white);
-  box-shadow: 0 0 0 4px rgba(178, 31, 61, 0.1);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.12);
 }
 
 .login-field input::placeholder {
@@ -288,7 +303,7 @@
   padding: 5px;
   border: 0;
   transform: translateY(-50%);
-  color: var(--sara-red);
+  color: var(--sara-purple);
   font-size: 0.77rem;
   font-weight: 700;
   line-height: 1;
@@ -299,7 +314,7 @@
 }
 
 .login-show-password:hover {
-  color: var(--sara-red-dark);
+  color: var(--sara-purple-dark);
   background: transparent;
   box-shadow: none;
 }
@@ -324,12 +339,12 @@
   width: 17px;
   height: 17px;
   margin: 0;
-  accent-color: var(--sara-red);
+  accent-color: var(--sara-purple);
 }
 
 .login-options a,
 .login-register a {
-  color: var(--sara-red);
+  color: var(--sara-purple);
   font-size: 0.84rem;
   font-weight: 700;
   text-decoration: none;
@@ -337,7 +352,7 @@
 
 .login-options a:hover,
 .login-register a:hover {
-  color: var(--sara-red-dark);
+  color: var(--sara-purple-dark);
 }
 
 .login-message {
@@ -370,12 +385,15 @@
   font-weight: 800;
   letter-spacing: 0.04rem;
   text-transform: none;
+
   background: linear-gradient(
     135deg,
-    var(--sara-red-light),
-    var(--sara-red-dark)
+    var(--sara-purple-light),
+    var(--sara-purple-dark)
   );
-  box-shadow: 0 12px 28px rgba(178, 31, 61, 0.27);
+
+  box-shadow: 0 12px 28px rgba(124, 58, 237, 0.3);
+
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -384,7 +402,7 @@
 .login-submit:hover {
   transform: translateY(-2px);
   color: var(--sara-white);
-  box-shadow: 0 16px 32px rgba(178, 31, 61, 0.34);
+  box-shadow: 0 16px 34px rgba(124, 58, 237, 0.4);
 }
 
 .login-register {
@@ -406,7 +424,7 @@
 }
 
 .login-back:hover {
-  color: var(--sara-red);
+  color: var(--sara-purple);
 }
 
 @media screen and (max-width: 850px) {
