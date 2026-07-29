@@ -81,7 +81,12 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.07);
 }
-
+.auth-help-text {
+  margin: -5px 0 0;
+  color: var(--auth-gray);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
 .auth-logo {
   position: relative;
   z-index: 1;

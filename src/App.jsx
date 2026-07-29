@@ -6,6 +6,7 @@ import Elements from "./pages/Elements";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import RecoverPassword from "./pages/RecoverPassword";
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
         <Route path="*" element={<NotFound />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Register />} />
+        <Route path="/recuperar-password"
+          element={<RecoverPassword />}/>
       </Routes>
     </BrowserRouter>
   );
