@@ -1,12 +1,25 @@
-import React from 'react';
-import Button from './Button';
+import Button from './Button'
 
-function SpotlightCard({ imageSrc, imagePosition = "center center", title, description, linkTo = "/generic", buttonText = "Learn more" }) {
+function SpotlightCard({
+  imageSrc,
+  imageAlt,
+  imagePosition = 'center center',
+  title,
+  description,
+  linkTo = '/generic',
+  buttonText = 'Conocer más',
+}) {
   return (
     <section>
-      <a href="/#" className="image">
-        <img src={imageSrc} alt="" data-position={imagePosition} />
-      </a>
+      <span className="image">
+        <img
+          src={imageSrc}
+          alt={imageAlt}
+          data-position={imagePosition}
+          loading="lazy"
+        />
+      </span>
+
       <div className="content">
         <div className="inner">
           <h2>{title}</h2>
@@ -15,7 +28,7 @@ function SpotlightCard({ imageSrc, imagePosition = "center center", title, descr
         </div>
       </div>
     </section>
-  );
+  )
 }
 
-export default SpotlightCard; // <-- Esta línea es obligatoria al final del archivo
+export default SpotlightCard

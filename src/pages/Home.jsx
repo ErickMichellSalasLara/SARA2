@@ -1,73 +1,97 @@
-import React from 'react';
-import Sidebar from '../components/Sidebar';
-import Footer from '../components/Footer';
-import SpotlightCard from '../components/SpotlightCard';
-import Button from '../components/Button'; // <-- Importamos el componente Button
+import Button from '../components/Button'
+import Footer from '../components/Footer'
+import Sidebar from '../components/Sidebar'
+import SpotlightCard from '../components/SpotlightCard'
+import pic01 from '../images/pic01.jpg'
+import pic02 from '../images/pic02.jpg'
+import pic03 from '../images/pic03.jpg'
 
 function Home() {
   return (
     <>
       <Sidebar />
+
       <div id="wrapper">
-        {/* Intro */}
         <section id="intro" className="wrapper style1 fullscreen fade-up">
           <div className="inner">
-            <h1>SPACE</h1>
-            <p>Just a DEMO page created by team S.A.R.A <br />.</p>
-            
-            {/* Reutilizando el botón en el Intro con un texto diferente */}
-            <Button to="#one" text="Descubrir más" className="button scrolly" />
+            <h1>S.A.R.A. 2.0</h1>
+            <p>
+              Sistema de Acceso y Registro Automatizado para administrar
+              accesos, reservas, préstamos y visitantes.
+            </p>
+            <Button
+              to="/login"
+              text="Iniciar sesión"
+              className="button primary"
+            />
+            <Button
+              to="#one"
+              text="Descubrir el proyecto"
+              className="button scrolly"
+            />
           </div>
         </section>
 
-        {/* One */}
         <section id="one" className="wrapper style2 spotlights">
-          
-          {/* Tarjeta 1 con su propio texto en el botón */}
-          <SpotlightCard 
-            imageSrc="images/pic01.jpg"
+          <SpotlightCard
+            imageSrc={pic01}
+            imageAlt="Control de acceso mediante una plataforma digital"
             imagePosition="center center"
-            title="BLa Bla BLa"
-            description="PAKWDKAKWDKAWDLAWKDJ."
+            title="Control de acceso"
+            description="S.A.R.A. registra entradas y salidas para ofrecer un acceso más ordenado, seguro y verificable."
             linkTo="/generic"
-            buttonText="Ver detalles" 
+            buttonText="Ver información"
           />
 
-          {/* Tarjeta 2 */}
-          <SpotlightCard 
-            imageSrc="images/pic02.jpg"
+          <SpotlightCard
+            imageSrc={pic02}
+            imageAlt="Administración y consulta de información del sistema"
             imagePosition="top center"
-            title="SEGUNDA SECCIÓN"
-            description="Aquí va otro texto diferente para la segunda tarjeta del proyecto S.A.R.A."
+            title="Gestión centralizada"
+            description="La plataforma reúne reservas, préstamos, visitantes y horarios en un mismo sistema."
             linkTo="/generic"
-            buttonText="Más información"
-          />
-          <SpotlightCard 
-            imageSrc="images/pic02.jpg"
-            imagePosition="top center"
-            title="SEGUNDA SECCIÓN"
-            description="Aquí va otro texto diferente para la segunda tarjeta del proyecto S.A.R.A."
-            linkTo="/generic"
-            buttonText="botoncito"
+            buttonText="Conocer funciones"
           />
 
+          <SpotlightCard
+            imageSrc={pic03}
+            imageAlt="Panel de datos y estadísticas del proyecto S.A.R.A."
+            imagePosition="center center"
+            title="Datos para tomar decisiones"
+            description="Los registros pueden convertirse en reportes e indicadores para conocer la actividad de las instalaciones."
+            linkTo="/elements"
+            buttonText="Abrir formulario"
+          />
         </section>
 
-        {/* Two */}
         <section id="two" className="wrapper style3 fade-up">
           <div className="inner">
-            <h2>What we do</h2>
-            <p>We are a team of professionals dedicated to providing the best services.</p>
-            
-            {/* Reutilizando el botón fuera de las tarjetas con otro texto */}
-            <Button to="/elements" text="Ver todos los elementos" />
+            <h2>¿Qué hace S.A.R.A.?</h2>
+            <p>
+              Integra hardware, una API, una base de datos y una interfaz web
+              para automatizar procesos que normalmente se realizan de manera
+              manual.
+            </p>
+            <Button to="/generic" text="Leer más sobre el sistema" />
           </div>
         </section>
 
+        <section id="three" className="wrapper style1 fade-up">
+          <div className="inner">
+            <h2>Contacto con el equipo</h2>
+            <p>
+              Esta sección puede conectarse posteriormente con un formulario,
+              correo institucional o información de los integrantes del equipo
+              S.A.R.A.
+            </p>
+            <Button to="/elements" text="Ir al formulario" />
+          </div>
+        </section>
       </div>
+
       <Footer footerClass="wrapper style1-alt" />
     </>
-  );
+  )
 }
 
-export default Home;
+export default Home

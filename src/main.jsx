@@ -1,14 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-
-// 1. Borra el import de './index.css' que trae React por defecto
-// 2. Importa aquí el CSS global de tu plantilla (asegúrate de que la ruta sea correcta)
-import './assets/css/main.css'
-
 import App from './App.jsx'
+import './assets/css/main.css'
+import './assets/css/react-fixes.css'
 
-// El "!" al final de getElementById es de TypeScript, si usas JSX normal puedes dejarlo o quitarlo, funcionará igual.
-createRoot(document.getElementById('root')).render(
+const rootElement = document.getElementById('root')
+
+if (!rootElement) {
+  throw new Error('No se encontró el elemento #root en index.html')
+}
+
+createRoot(rootElement).render(
   <StrictMode>
     <App />
   </StrictMode>,

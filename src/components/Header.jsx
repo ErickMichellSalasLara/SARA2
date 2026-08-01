@@ -1,29 +1,37 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom'
+
+function getNavClass({ isActive }) {
+  return isActive ? 'active' : undefined
+}
 
 function Header() {
-  const location = useLocation();
-
   return (
     <header id="header">
-      <Link to="/" className="title">Hyperspace</Link>
-      <nav>
+      <Link to="/" className="title">
+        S.A.R.A. 2.0
+      </Link>
+
+      <nav aria-label="Navegación de páginas">
         <ul>
-          <li><Link to="/">Home</Link></li>
           <li>
-            <Link to="/generic" className={location.pathname === '/generic' ? 'active' : ''}>
-              Generic
-            </Link>
+            <NavLink to="/" end className={getNavClass}>
+              Inicio
+            </NavLink>
           </li>
           <li>
-            <Link to="/elements" className={location.pathname === '/elements' ? 'active' : ''}>
-              Elements
-            </Link>
+            <NavLink to="/generic" className={getNavClass}>
+              Información
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/elements" className={getNavClass}>
+              Formulario
+            </NavLink>
           </li>
         </ul>
       </nav>
     </header>
-  );
+  )
 }
 
-export default Header;
+export default Header
