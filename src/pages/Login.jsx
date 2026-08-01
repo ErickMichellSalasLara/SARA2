@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 
+=======
+>>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
 import AuthLayout from "../components/auth/AuthLayout";
 import AuthInput from "../components/auth/AuthInput";
 import PasswordInput from "../components/auth/PasswordInput";
 import AuthMessage from "../components/auth/AuthMessage";
 import AuthSubmitButton from "../components/auth/AuthSubmitButton";
+<<<<<<< HEAD
 
 import "./Auth.css";
 
@@ -56,11 +60,38 @@ function Login() {
     }
 
     return "";
+=======
+import "./Auth.css";
+
+
+const initialForm = {
+  email: "",
+  password: "",
+  remember: false,
+};
+
+function Login() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState(initialForm);
+  const [message, setMessage] = useState({ type: "", text: "" });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (event) => {
+    const { name, value, checked, type } = event.target;
+
+    setFormData((current) => ({
+      ...current,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+
+    setMessage({ type: "", text: "" });
+>>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+<<<<<<< HEAD
     const validationError = validateForm();
 
     if (validationError) {
@@ -125,6 +156,51 @@ function Login() {
       setMessage({
         type: "error",
         text: "Ocurrió un error al iniciar sesión.",
+=======
+    const email = formData.email.trim().toLowerCase();
+    const password = formData.password;
+
+    if (!email || !password) {
+      setMessage({
+        type: "error",
+        text: "Completa todos los campos obligatorios.",
+      });
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setMessage({ type: "", text: "" });
+
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "No fue posible iniciar sesión.");
+      }
+
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+      }
+
+      setMessage({
+        type: "success",
+        text: `Bienvenido, ${data.user?.name || "usuario"}.`,
+      });
+
+      navigate("/dashboard");
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error.message,
+>>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
       });
     } finally {
       setIsLoading(false);
@@ -133,6 +209,7 @@ function Login() {
 
   return (
     <AuthLayout
+<<<<<<< HEAD
       badge="Acceso administrativo"
       title="Bienvenido a S.A.R.A."
       description="Administra accesos, reservas, préstamos y estadísticas del Learning Commons desde un solo lugar."
@@ -158,6 +235,29 @@ function Login() {
           type="email"
           value={formData.email}
           placeholder="admin@utr.edu.mx"
+=======
+      badge="Sistema inteligente"
+      title="Bienvenido nuevamente"
+      description="Accede a la plataforma S.A.R.A para consultar información y utilizar las funciones disponibles."
+      features={[
+        "Acceso seguro a la plataforma.",
+        "Administración centralizada.",
+        "Interfaz rápida y adaptable.",
+      ]}
+      formEyebrow="Acceso al sistema"
+      formTitle="Iniciar sesión"
+      formDescription="Ingresa tus datos para acceder a tu cuenta."
+      icon="S"
+    >
+      <form className="auth-form" onSubmit={handleSubmit} noValidate>
+        <AuthInput
+          id="login-email"
+          label="Correo electrónico"
+          name="email"
+          type="email"
+          value={formData.email}
+          placeholder="usuario@correo.com"
+>>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
           autoComplete="email"
           onChange={handleChange}
           required
@@ -172,6 +272,7 @@ function Login() {
           autoComplete="current-password"
           onChange={handleChange}
           required
+<<<<<<< HEAD
         />
 
         <div className="auth-form-options">
@@ -184,6 +285,23 @@ function Login() {
             to="/recuperar-password"
             className="auth-forgot-link"
           >
+=======
+          minLength={8}
+        />
+
+        <div className="auth-options">
+          <label className="auth-checkbox">
+            <input
+              name="remember"
+              type="checkbox"
+              checked={formData.remember}
+              onChange={handleChange}
+            />
+            <span>Recordar sesión</span>
+          </label>
+
+          <Link to="/recuperar-password">
+>>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
             ¿Olvidaste tu contraseña?
           </Link>
         </div>
@@ -192,7 +310,11 @@ function Login() {
 
         <AuthSubmitButton
           isLoading={isLoading}
+<<<<<<< HEAD
           loadingText="Iniciando sesión..."
+=======
+          loadingText="Verificando..."
+>>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
         >
           Iniciar sesión
         </AuthSubmitButton>
@@ -200,6 +322,7 @@ function Login() {
 
       <div className="auth-switch">
         <span>¿No tienes una cuenta?</span>
+<<<<<<< HEAD
         <Link to="/registro">
           Registrarse
         </Link>
@@ -215,6 +338,9 @@ function Login() {
         <p>
           Contraseña: <span>Admin123</span>
         </p>
+=======
+        <Link to="/registro">Crear una cuenta</Link>
+>>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
       </div>
 
       <Link to="/" className="auth-back">
@@ -224,4 +350,8 @@ function Login() {
   );
 }
 
+<<<<<<< HEAD
 export default Login;
+=======
+export default Login;
+>>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
