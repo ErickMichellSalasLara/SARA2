@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   BrowserRouter,
   Navigate,
@@ -28,23 +27,11 @@ import Users from "./pages/admin/Users";
 import Reports from "./pages/admin/Reports";
 import Audit from "./pages/admin/Audit";
 import Settings from "./pages/admin/Settings";
-=======
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./pages/Home";
-import Generic from "./pages/Generic";
-import Elements from "./pages/Elements";
-
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import RecoverPassword from "./pages/RecoverPassword";
->>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-<<<<<<< HEAD
         {/* Rutas públicas */}
         <Route path="/" element={<Home />} />
 
@@ -146,23 +133,9 @@ function App() {
           path="*"
           element={<NotFound />}
         />
-=======
-        <Route path="/" element={<Home />} />
-        <Route path="/generic" element={<Generic />} />
-        <Route path="/elements" element={<Elements />} />
-        <Route path="*" element={<NotFound />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Register />} />
-        <Route path="/recuperar-password"
-          element={<RecoverPassword />}/>
->>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
       </Routes>
     </BrowserRouter>
   );
 }
 
-<<<<<<< HEAD
 export default App;
-=======
-export default App;
->>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
