@@ -111,6 +111,38 @@ function Reservations() {
     setReservationToCancel(null);
   };
 
+  // NUEVA FUNCIÓN PARA DESCARGAR EL EXCEL
+  const handleDownloadExcel = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/reportes/reservas/excel");
+
+      if (!response.ok) {
+        throw new Error("Error al descargar el archivo");
+      }
+
+      // Convertimos la respuesta en un "Blob" (un archivo binario)
+      const blob = await response.blob();
+
+      // Creamos una URL temporal en el navegador para descargar ese archivo
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      // Le ponemos el nombre con el que se descargará
+      link.setAttribute("download", "Reporte_Reservas_SARA.xlsx");
+
+      document.body.appendChild(link);
+      link.click(); // Simulamos un clic
+
+      // Limpiamos la memoria
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error("Hubo un problema con la descarga: ", error);
+      alert("No se pudo descargar el reporte de Excel.");
+    }
+  };
+
   return (
       <section className="module-page">
         <ModuleHeader
@@ -141,28 +173,51 @@ function Reservations() {
           </article>
         </div>
 
-        {/* 3. CONMUTADOR DE VISTAS (TABLA / CALENDARIO) */}
-        <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
-          <button
-              type="button"
-              className={viewMode === "calendar" ? "module-primary-button" : "module-link-button"}
-              onClick={() => setViewMode("calendar")}
-          >
-            Vista Calendario
-          </button>
-          <button
-              type="button"
-              className={viewMode === "table" ? "module-primary-button" : "module-link-button"}
-              onClick={() => setViewMode("table")}
-          >
-            Vista Tabla
-          </button>
+        {/* 3. CONMUTADOR DE VISTAS Y BOTÓN DE REPORTE */}
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px" }}>
+
+          {/* Contenedor izquierdo: Vistas */}
+          <div style={{ display: "flex", gap: "10px" }}>
+            <button
+                type="button"
+                className={viewMode === "calendar" ? "module-primary-button" : "module-link-button"}
+                onClick={() => setViewMode("calendar")}
+            >
+              Vista Calendario
+            </button>
+            <button
+                type="button"
+                className={viewMode === "table" ? "module-primary-button" : "module-link-button"}
+                onClick={() => setViewMode("table")}
+            >
+              Vista Tabla
+            </button>
+          </div>
+
+          {/* Contenedor derecho: Botón de Excel */}
+          <div>
+            <button
+                type="button"
+                className="module-primary-button"
+                style={{ backgroundColor: "#107c41", borderColor: "#107c41" }} // Color verde estilo Excel
+                onClick={handleDownloadExcel}
+            >
+              📊 Descargar Reporte (Excel)
+            </button>
+          </div>
         </div>
 
         {/* 4. RENDERIZADO CONDICIONAL DE ACUERDO A LA SELECCIÓN */}
         {viewMode === "calendar" ? (
             <div className="module-card">
-              <CalendarView />
+              <CalendarView
+                  onDateClick={(fechaSeleccionada) => {
+                    // 1. Llenamos el formulario con la fecha que el usuario seleccionó
+                    setForm({ ...emptyForm, date: fechaSeleccionada });
+                    // 2. Abrimos el modal
+                    setIsFormOpen(true);
+                  }}
+              />
             </div>
         ) : (
             <div className="module-card">
@@ -237,17 +292,12 @@ function Reservations() {
           <form className="module-form" onSubmit={saveReservation}>
             <label>
               Cubículo
-              <select
-                  name="room"
-                  value={form.room}
-                  onChange={handleChange}
-                  required
-              >
+              <select name="room" value={form.room} onChange={handleChange} required>
                 <option value="">Selecciona un cubículo</option>
-                <option>Cubículo 01</option>
-                <option>Cubículo 02</option>
-                <option>Cubículo 03</option>
-                <option>Cubículo 05</option>
+                <option value="Africa">África</option>
+                <option value="America">América</option>
+                <option value="Oceania">Oceanía</option>
+                <option value="Asia">Asia</option>
               </select>
             </label>
 
