@@ -3,7 +3,7 @@ import { getStoredUser, isAdminUser } from "../utils/auth";
 
 function RequireAdmin() {
   const location = useLocation();
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
   const user = getStoredUser();
 
   if (!token || !user) {
