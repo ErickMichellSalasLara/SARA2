@@ -2,7 +2,8 @@ const ADMIN_ROLES = new Set(["admin", "administrador", "administrator"]);
 
 export function getStoredUser() {
   try {
-    const value = localStorage.getItem("user");
+    // Que busque en ambos lados
+    const value = localStorage.getItem("user") || sessionStorage.getItem("user");
     return value ? JSON.parse(value) : null;
   } catch {
     return null;

@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RecoverPassword from "./pages/RecoverPassword";
 import NotFound from "./pages/NotFound";
+import BackEndSARA from './components/BackEndSARA.jsx';
 
 // Protección y estructura administrativa
 import RequireAdmin from "./routes/RequireAdmin";
@@ -58,6 +59,11 @@ function App() {
         <Route
           path="/recuperar-password"
           element={<RecoverPassword />}
+        />
+
+        <Route
+            path="/prueba-api"
+            element={<BackEndSARA />}
         />
 
         {/* Rutas protegidas para administradores */}
