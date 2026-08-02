@@ -114,7 +114,8 @@ function Reservations() {
   // NUEVA FUNCIÓN PARA DESCARGAR EL EXCEL
   const handleDownloadExcel = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/reportes/reservas/excel");
+      // Agregamos https:// y la ruta /api/reportes/reservas/excel
+      const response = await fetch("https://sara2backend-production.up.railway.app/api/reportes/reservas/excel"); 
 
       if (!response.ok) {
         throw new Error("Error al descargar el archivo");
