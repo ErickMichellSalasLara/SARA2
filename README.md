@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # S.A.R.A. 2 — Sistema de Acceso y Registro Automatizado
 
 > Plataforma IoT modular de control de acceso físico y Business Intelligence para el Learning Commons de la Universidad Tecnológica Regional (UTR), Aguascalientes.

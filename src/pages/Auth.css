@@ -518,32 +518,4 @@
     transition: none;
   }
 }
-<<<<<<< HEAD
 
-.auth-demo-account {
-  margin-top: 20px;
-  padding: 14px 16px;
-  border: 1px solid rgba(124, 58, 237, 0.2);
-  border-radius: 12px;
-  color: var(--auth-gray);
-  background: rgba(124, 58, 237, 0.06);
-}
-
-.auth-demo-account strong {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--auth-title);
-  font-size: 0.8rem;
-}
-
-.auth-demo-account p {
-  margin: 4px 0;
-  font-size: 0.75rem;
-}
-
-.auth-demo-account span {
-  color: var(--auth-purple);
-  font-weight: 700;
-}
-=======
->>>>>>> ff3e41f15ec3b26033e6304527d7dde1e04488eb
