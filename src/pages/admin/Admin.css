@@ -711,6 +711,10 @@
   background: var(--admin-purple-500);
 }
 
+.admin-legend-dot.is-reserved {
+  background: #2563eb;
+}
+
 .admin-legend-dot.is-available {
   background: #22c55e;
 }

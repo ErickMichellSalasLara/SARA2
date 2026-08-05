@@ -13,12 +13,23 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RecoverPassword from "./pages/RecoverPassword";
 import NotFound from "./pages/NotFound";
-import BackEndSARA from './components/BackEndSARA.jsx';
+import BackEndSARA from "./components/BackEndSARA.jsx";
 
-// Protección y estructura administrativa
+// Protección de rutas
 import RequireAdmin from "./routes/RequireAdmin";
+import RequireStudent from "./routes/RequireStudent";
+
+// Layouts
 import AdminLayout from "./layouts/AdminLayout";
+import StudentLayout from "./layouts/StudentLayout";
+
+// Páginas de inicio de dashboards
+import AdminHome from "./pages/admin/AdminHome";
+import StudentHome from "./pages/student/StudentHome";
+
+// Dashboards principales
 import AdminDashboard from "./pages/admin/AdminDashboard";
+import StudentDashboard from "./pages/student/StudentDashboard";
 
 // Módulos administrativos
 import Accesses from "./pages/admin/Accesses";
@@ -33,7 +44,10 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rutas públicas */}
+        {/* =========================
+            RUTAS PÚBLICAS
+        ========================== */}
+
         <Route path="/" element={<Home />} />
 
         <Route
@@ -62,31 +76,73 @@ function App() {
         />
 
         <Route
-            path="/prueba-api"
-            element={<BackEndSARA />}
+          path="/prueba-api"
+          element={<BackEndSARA />}
         />
 
-        {/* Rutas protegidas para administradores */}
+        {/* =========================
+            RUTAS PARA ALUMNOS
+        ========================== */}
+
+        <Route element={<RequireStudent />}>
+          <Route
+            path="/alumno"
+            element={<StudentLayout />}
+          >
+            {/* Página informativa inicial */}
+            <Route
+              index
+              element={<StudentHome />}
+            />
+
+            {/* Dashboard de cubículos */}
+            <Route
+              path="cubiculos"
+              element={<StudentDashboard />}
+            />
+
+            {/* Redirección de compatibilidad */}
+            <Route
+              path="dashboard"
+              element={
+                <Navigate
+                  to="/alumno/cubiculos"
+                  replace
+                />
+              }
+            />
+          </Route>
+        </Route>
+
+        {/* =========================
+            RUTAS PARA ADMINISTRADORES
+        ========================== */}
+
         <Route element={<RequireAdmin />}>
-          {/* Redirección opcional */}
+          {/* Redirección de ruta anterior */}
           <Route
             path="/dashboard"
             element={
               <Navigate
-                to="/admin"
+                to="/admin/dashboard"
                 replace
               />
             }
           />
 
-          {/* Layout administrativo */}
           <Route
             path="/admin"
             element={<AdminLayout />}
           >
-            {/* Dashboard principal */}
+            {/* Página informativa inicial */}
             <Route
               index
+              element={<AdminHome />}
+            />
+
+            {/* Dashboard de métricas */}
+            <Route
+              path="dashboard"
               element={<AdminDashboard />}
             />
 
@@ -134,7 +190,10 @@ function App() {
           </Route>
         </Route>
 
-        {/* Página no encontrada */}
+        {/* =========================
+            PÁGINA NO ENCONTRADA
+        ========================== */}
+
         <Route
           path="*"
           element={<NotFound />}

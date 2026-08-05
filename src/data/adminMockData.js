@@ -1,3 +1,5 @@
+import { getCubicleOccupancy } from "./cubiclesMockData";
+
 export const adminMockData = {
   metrics: [
     {
@@ -20,7 +22,7 @@ export const adminMockData = {
     },
     {
       id: "occupancy",
-      title: "Cubículos ocupados",
+      title: "Cubículos no disponibles",
       value: "8 / 12",
       detail: "67% de ocupación",
       trend: "3 disponibles",
@@ -46,11 +48,7 @@ export const adminMockData = {
     { label: "13:00", value: 112 },
     { label: "14:00", value: 91 },
   ],
-  occupancy: {
-    occupied: 8,
-    available: 3,
-    maintenance: 1,
-  },
+  occupancy: getCubicleOccupancy(),
   activities: [
     {
       id: 1,

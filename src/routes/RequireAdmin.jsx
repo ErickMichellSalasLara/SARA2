@@ -17,7 +17,7 @@ function RequireAdmin() {
   }
 
   if (!isAdminUser(user)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/alumno" replace />;
   }
 
   return <Outlet />;
