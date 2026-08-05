@@ -26,7 +26,7 @@ function Loans() {
   // 2. Obtener préstamos del backend
   const fetchLoans = useCallback(async () => {
     try {
-      const respuesta = await fetch("http://localhost:8000/api/prestamos/historial");
+      const respuesta = await fetch("sara2backend-production.up.railway.app/api/prestamos/historial");
       const data = await respuesta.json();
 
       const prestamosFormateados = data.prestamos.map(item => ({
@@ -90,7 +90,7 @@ function Loans() {
     event.preventDefault();
 
     try {
-      const respuesta = await fetch("http://localhost:8000/api/prestamos/registrar", {
+      const respuesta = await fetch("sara2backend-production.up.railway.app/api/prestamos/registrar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -111,7 +111,7 @@ function Loans() {
 
   const returnLoan = async (id) => {
     try {
-      const respuesta = await fetch(`http://localhost:8000/api/prestamos/devolver/${id}`, {
+      const respuesta = await fetch(`sara2backend-production.up.railway.app/api/prestamos/devolver/${id}`, {
         method: "PUT"
       });
 
