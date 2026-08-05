@@ -1,0 +1,248 @@
+.student-dashboard-page {
+  display: grid;
+  gap: 20px;
+}
+
+.student-welcome {
+  margin-bottom: 0;
+}
+
+.student-dashboard-summary {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+  gap: 20px;
+}
+
+.student-information-panel ul {
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding-left: 20px;
+  color: var(--admin-muted);
+}
+
+.student-information-panel li {
+  padding-left: 4px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.student-cubicles-panel {
+  margin-top: 0;
+}
+
+.student-panel-heading {
+  align-items: flex-end;
+}
+
+.student-cubicle-filters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.student-cubicle-filters button {
+  width: auto;
+  min-width: 0;
+  height: 34px;
+  padding: 0 13px;
+  border: 1px solid var(--admin-border);
+  border-radius: 999px;
+  color: var(--admin-muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: normal;
+  text-transform: none;
+  background: #fff;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.student-cubicle-filters button:hover,
+.student-cubicle-filters button.is-active {
+  border-color: var(--admin-purple-500);
+  color: #fff;
+  background: var(--admin-purple-500);
+}
+
+.student-cubicle-filters button:focus-visible {
+  outline: 3px solid rgba(168, 85, 247, 0.42);
+  outline-offset: 2px;
+}
+
+.student-cubicles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.student-cubicle-card {
+  position: relative;
+  min-width: 0;
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid var(--admin-border);
+  border-radius: 15px;
+  background: #fff;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.student-cubicle-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: #a49cac;
+}
+
+.student-cubicle-card.is-occupied::before {
+  background: #e13b5b;
+}
+
+.student-cubicle-card.is-reserved::before {
+  background: #2563eb;
+}
+
+.student-cubicle-card.is-available::before {
+  background: #22c55e;
+}
+
+.student-cubicle-card.is-maintenance::before {
+  background: #f59e0b;
+}
+
+.student-cubicle-card:hover {
+  transform: translateY(-2px);
+  border-color: #d8c7f7;
+  box-shadow: 0 14px 30px rgba(45, 25, 72, 0.09);
+}
+
+.student-cubicle-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 17px;
+}
+
+.student-cubicle-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--admin-purple-500);
+  background: var(--admin-purple-50);
+}
+
+.student-cubicle-title {
+  margin-bottom: 17px;
+}
+
+.student-cubicle-title span {
+  color: var(--admin-purple-500);
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.1rem;
+}
+
+.student-cubicle-title h3 {
+  margin: 4px 0 0;
+  color: var(--admin-text);
+  font-size: 1rem;
+}
+
+.student-cubicle-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.student-cubicle-details div {
+  min-width: 0;
+}
+
+.student-cubicle-details dt,
+.student-cubicle-schedule span {
+  color: var(--admin-muted);
+  font-size: 0.64rem;
+}
+
+.student-cubicle-details dd {
+  overflow: hidden;
+  margin: 4px 0 0;
+  color: var(--admin-text);
+  font-size: 0.72rem;
+  font-weight: 750;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-cubicle-schedule {
+  display: grid;
+  gap: 4px;
+  padding: 11px 12px;
+  border-radius: 10px;
+  background: var(--admin-purple-50);
+}
+
+.student-cubicle-schedule strong {
+  color: var(--admin-text);
+  font-size: 0.72rem;
+}
+
+.student-empty-state {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+}
+
+.student-empty-state h3 {
+  margin: 0 0 7px;
+  color: var(--admin-text);
+}
+
+.student-empty-state p {
+  margin: 0;
+  color: var(--admin-muted);
+  font-size: 0.78rem;
+}
+
+@media screen and (max-width: 1180px) {
+  .student-cubicles-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .student-dashboard-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 720px) {
+  .student-panel-heading {
+    align-items: flex-start;
+  }
+
+  .student-cubicle-filters {
+    justify-content: flex-start;
+  }
+
+  .student-cubicles-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .student-cubicle-card {
+    transition: none;
+  }
+}
