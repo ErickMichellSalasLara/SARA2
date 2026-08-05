@@ -15,7 +15,7 @@ function Audit() {
   useEffect(() => {
     const fetchAuditoria = async () => {
       try {
-        const respuesta = await fetch("http://localhost:8000/api/auditoria/historial");
+        const respuesta = await fetch("sara2backend-production.up.railway.app/api/auditoria/historial");
         if (respuesta.ok) {
           const data = await respuesta.json();
           // Asumiendo que tu backend devuelve { auditoria: [...] }

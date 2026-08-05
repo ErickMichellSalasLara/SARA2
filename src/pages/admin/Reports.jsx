@@ -38,8 +38,7 @@ function Reports() {
   const generateReport = async () => {
     try {
       // Construimos la URL dinámica hacia tu FastAPI
-      // Ejemplo: http://localhost:8000/api/reportes/accesses/pdf?inicio=2026-08-01&fin=2026-08-01
-      const url = `http://localhost:8000/api/reportes/${selectedReport}/${format}?inicio=${dates.start}&fin=${dates.end}`;
+      const url = `sara2backend-production.up.railway.app/api/reportes/${selectedReport}/${format}?inicio=${dates.start}&fin=${dates.end}`;
 
       const response = await fetch(url);
 

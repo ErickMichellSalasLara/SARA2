@@ -27,8 +27,8 @@ function AdminDashboard() {
 
             try {
                 const [resAccesos, resPrestamos] = await Promise.all([
-                    fetch("http://localhost:8000/api/accesos/historial"),
-                    fetch("http://localhost:8000/api/prestamos/historial")
+                    fetch("sara2backend-production.up.railway.app/api/accesos/historial"),
+                    fetch("sara2backend-production.up.railway.app/api/prestamos/historial")
                 ]);
 
                 if (resAccesos.ok) {

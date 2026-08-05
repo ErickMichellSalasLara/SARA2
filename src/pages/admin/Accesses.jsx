@@ -56,7 +56,7 @@ function Accesses() {
   useEffect(() => {
     const fetchAccesos = async () => {
       try {
-        const respuesta = await fetch("http://localhost:8000/api/accesos/historial");
+        const respuesta = await fetch("sara2backend-production.up.railway.app/api/accesos/historial");
         const data = await respuesta.json();
 
         // Mapeamos las llaves del backend al formato que espera tu tabla/filtros
