@@ -8,7 +8,8 @@ export async function getAdminDashboardData() {
     return adminMockData;
   }
 
-  const token = localStorage.getItem("token");
+  const token =
+    localStorage.getItem("token") || sessionStorage.getItem("token");
 
   const response = await fetch("/api/dashboard/summary", {
     headers: {

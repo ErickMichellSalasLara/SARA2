@@ -274,6 +274,27 @@
 
 .auth-field input::placeholder {
   color: #9b8ba5;
+  -webkit-text-fill-color: #9b8ba5;
+  opacity: 1;
+}
+
+.auth-page .auth-field input,
+.auth-page .auth-field input[type="text"],
+.auth-page .auth-field input[type="email"],
+.auth-page .auth-field input[type="password"] {
+  color: var(--auth-text) !important;
+  caret-color: var(--auth-purple);
+  -webkit-text-fill-color: var(--auth-text) !important;
+  opacity: 1;
+}
+
+.auth-page .auth-field input:-webkit-autofill,
+.auth-page .auth-field input:-webkit-autofill:hover,
+.auth-page .auth-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--auth-text) !important;
+  caret-color: var(--auth-purple);
+  box-shadow: 0 0 0 1000px var(--auth-soft-white) inset !important;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .auth-password-container {
