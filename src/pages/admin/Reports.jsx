@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ModuleHeader from "../../components/admin/modules/ModuleHeader";
 import "./AdminModules.css";
+import { registrarAuditoria } from "../../services/auditService";
 
 const reportCards = [
   {
@@ -33,29 +34,46 @@ function Reports() {
     end: "2026-08-01",
   });
 
-  const generateReport = () => {
-    const content = [
-      "S.A.R.A - Reporte administrativo",
-      `Tipo: ${selectedReport}`,
-      `Fecha inicial: ${dates.start}`,
-      `Fecha final: ${dates.end}`,
-      `Formato seleccionado: ${format}`,
-      "",
-      "Este archivo es una demostración sin backend.",
-    ].join("\n");
+  // NUEVO: Función asíncrona para pedir el archivo real al backend
+  const generateReport = async () => {
+    try {
+      // Construimos la URL dinámica hacia tu FastAPI
+      // Ejemplo: http://localhost:8000/api/reportes/accesses/pdf?inicio=2026-08-01&fin=2026-08-01
+      const url = `http://localhost:8000/api/reportes/${selectedReport}/${format}?inicio=${dates.start}&fin=${dates.end}`;
 
-    const blob = new Blob([content], {
-      type: "text/plain;charset=utf-8",
-    });
+      const response = await fetch(url);
 
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
+      if (!response.ok) {
+        throw new Error("No se pudo generar el reporte en el servidor");
+      }
 
-    anchor.href = url;
-    anchor.download = `reporte-${selectedReport}.${format === "csv" ? "csv" : "txt"}`;
-    anchor.click();
+      // Convertimos la respuesta a un archivo binario (Blob)
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = downloadUrl;
 
-    URL.revokeObjectURL(url);
+      // Asignamos la extensión correcta según el formato
+      let extension = format === "excel" ? "xlsx" : format;
+      anchor.download = `Reporte_${selectedReport}_SARA.${extension}`;
+
+      // Simulamos el clic para descargar
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      window.URL.revokeObjectURL(downloadUrl);
+
+      // REGISTRAMOS EN AUDITORÍA
+      await registrarAuditoria(
+          `Generó reporte en ${format.toUpperCase()}`,
+          "Reportes",
+          `Módulo: ${selectedReport}`
+      );
+
+    } catch (error) {
+      console.error("Error al descargar el reporte:", error);
+      alert("Hubo un problema al generar el reporte. Verifica que el servidor backend esté encendido.");
+    }
   };
 
   return (

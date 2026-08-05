@@ -1,0 +1,61 @@
+/* Limpieza de la cuadrícula general */
+.sara-calendar-wrapper .fc-theme-standard td,
+.sara-calendar-wrapper .fc-theme-standard th {
+    border-color: #f0f0f0;
+}
+
+/* Encabezados de los días (lun, mar, mié...) */
+.sara-calendar-wrapper .fc-col-header-cell-cushion {
+    color: #674487;
+    font-weight: 600;
+    text-transform: capitalize;
+    padding: 8px 0;
+}
+
+/* Números de los días (1, 2, 3...) */
+.sara-calendar-wrapper .fc-daygrid-day-number {
+    color: #333333;
+    font-weight: 500;
+}
+
+/* Darle estilo corporativo a los botones superiores (Mes, Semana, Hoy, etc.) */
+.sara-calendar-wrapper .fc .fc-button-primary {
+    background-color: #674487;
+    border-color: #674487;
+    color: #ffffff;
+    text-transform: capitalize;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+/* Hover de los botones */
+.sara-calendar-wrapper .fc .fc-button-primary:hover {
+    background-color: #553670;
+    border-color: #553670;
+}
+
+/* Botón activo (el que está seleccionado) */
+.sara-calendar-wrapper .fc .fc-button-primary:not(:disabled):active,
+.sara-calendar-wrapper .fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #432959;
+    border-color: #432959;
+}
+
+/* Botones deshabilitados (ej. prev/next) */
+.sara-calendar-wrapper .fc .fc-button-primary:disabled {
+    background-color: #a891c9;
+    border-color: #a891c9;
+}
+
+/* Título del mes/semana */
+.sara-calendar-wrapper .fc-toolbar-title {
+    color: #1e1e1e;
+    font-size: 1.25rem !important;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+/* Resaltar el día actual ("Hoy") */
+.sara-calendar-wrapper .fc .fc-daygrid-day.fc-day-today {
+    background-color: rgba(103, 68, 135, 0.05); /* Un morado muy sutil de fondo */
+}

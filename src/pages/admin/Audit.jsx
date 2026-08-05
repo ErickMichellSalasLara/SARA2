@@ -1,67 +1,50 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import ModuleHeader from "../../components/admin/modules/ModuleHeader";
 import ModuleToolbar from "../../components/admin/modules/ModuleToolbar";
 import EmptyState from "../../components/admin/modules/EmptyState";
 import "./AdminModules.css";
 
-const auditRecords = [
-  {
-    id: 1,
-    admin: "Mónica Silva",
-    action: "Creó una reserva",
-    module: "Reservas",
-    record: "Cubículo 02",
-    date: "2026-08-01 10:58",
-    ip: "192.168.1.40",
-  },
-  {
-    id: 2,
-    admin: "Mónica Silva",
-    action: "Desactivó un usuario",
-    module: "Usuarios",
-    record: "UTR210270",
-    date: "2026-08-01 10:21",
-    ip: "192.168.1.40",
-  },
-  {
-    id: 3,
-    admin: "José Herrera",
-    action: "Registró una devolución",
-    module: "Préstamos",
-    record: "LIB-118",
-    date: "2026-08-01 09:47",
-    ip: "192.168.1.42",
-  },
-  {
-    id: 4,
-    admin: "José Herrera",
-    action: "Modificó la configuración",
-    module: "Configuración",
-    record: "Tiempo de tolerancia",
-    date: "2026-07-31 17:15",
-    ip: "192.168.1.42",
-  },
-];
-
 function Audit() {
+// NUEVO: Estado para guardar los registros reales de la API
+  const [auditRecords, setAuditRecords] = useState([]);
+
   const [search, setSearch] = useState("");
   const [module, setModule] = useState("all");
+
+  // NUEVO: Traer los datos al cargar la pantalla
+  useEffect(() => {
+    const fetchAuditoria = async () => {
+      try {
+        const respuesta = await fetch("http://localhost:8000/api/auditoria/historial");
+        if (respuesta.ok) {
+          const data = await respuesta.json();
+          // Asumiendo que tu backend devuelve { auditoria: [...] }
+          setAuditRecords(data.auditoria || []);
+        }
+      } catch (error) {
+        console.error("Error al cargar la auditoría:", error);
+      }
+    };
+
+    fetchAuditoria();
+  }, []);
 
   const filteredRecords = useMemo(() => {
     return auditRecords.filter((item) => {
       const query = search.trim().toLowerCase();
 
+      // Ajusta las propiedades (item.admin, item.action) al nombre real que te devuelva Python
       const matchesSearch =
-        item.admin.toLowerCase().includes(query) ||
-        item.action.toLowerCase().includes(query) ||
-        item.record.toLowerCase().includes(query);
+          (item.admin || "").toLowerCase().includes(query) ||
+          (item.action || "").toLowerCase().includes(query) ||
+          (item.record || "").toLowerCase().includes(query);
 
       const matchesModule =
-        module === "all" || item.module.toLowerCase() === module;
+          module === "all" || (item.module || "").toLowerCase() === module;
 
       return matchesSearch && matchesModule;
     });
-  }, [search, module]);
+  }, [auditRecords, search, module]);
 
   return (
     <section className="module-page">
