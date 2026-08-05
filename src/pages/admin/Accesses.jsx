@@ -1,57 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import ModuleHeader from "../../components/admin/modules/ModuleHeader";
 import ModuleToolbar from "../../components/admin/modules/ModuleToolbar";
 import ModuleStatus from "../../components/admin/modules/ModuleStatus";
 import EmptyState from "../../components/admin/modules/EmptyState";
 import "./AdminModules.css";
-
-const accessRecords = [
-  {
-    id: 1,
-    name: "Ana López",
-    enrollment: "UTR230145",
-    time: "11:02",
-    movement: "Entrada",
-    reader: "Puerta principal",
-    status: "Permitido",
-  },
-  {
-    id: 2,
-    name: "Carlos Ruiz",
-    enrollment: "UTR220418",
-    time: "10:58",
-    movement: "Salida",
-    reader: "Puerta principal",
-    status: "Permitido",
-  },
-  {
-    id: 3,
-    name: "Usuario desconocido",
-    enrollment: "Sin identificar",
-    time: "10:40",
-    movement: "Entrada",
-    reader: "Lector norte",
-    status: "Denegado",
-  },
-  {
-    id: 4,
-    name: "Laura Díaz",
-    enrollment: "UTR240083",
-    time: "10:31",
-    movement: "Entrada",
-    reader: "Puerta principal",
-    status: "Permitido",
-  },
-  {
-    id: 5,
-    name: "Miguel Lara",
-    enrollment: "UTR230512",
-    time: "10:18",
-    movement: "Salida",
-    reader: "Puerta principal",
-    status: "Permitido",
-  },
-];
 
 function downloadCsv(rows) {
   const headers = [
@@ -93,27 +45,61 @@ function downloadCsv(rows) {
 }
 
 function Accesses() {
+  // 1. Nuevo estado para los registros (inicia vacío)
+  const [accessRecords, setAccessRecords] = useState([]);
+
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [movement, setMovement] = useState("all");
+
+  // 2. useEffect para cargar los datos del backend al montar el componente
+  useEffect(() => {
+    const fetchAccesos = async () => {
+      try {
+        const respuesta = await fetch("http://localhost:8000/api/accesos/historial");
+        const data = await respuesta.json();
+
+        // Mapeamos las llaves del backend al formato que espera tu tabla/filtros
+        const registrosFormateados = data.accesos.map(item => ({
+          id: item.id,
+          name: item.nombre,
+          enrollment: item.matricula,
+          time: item.hora_salida || item.hora_entrada, // Mostramos la hora más reciente
+          movement: item.hora_salida ? "Salida" : "Entrada",
+          reader: "Puerta principal", // Este dato puede venir del backend después
+          status: item.estatus === "Completado" || item.estatus === "En sitio" ? "Permitido" : "Denegado"
+        }));
+
+        setAccessRecords(registrosFormateados);
+      } catch (error) {
+        console.error("Error al obtener el historial de accesos:", error);
+      }
+    };
+
+    fetchAccesos();
+  }, []);
 
   const filteredRecords = useMemo(() => {
     return accessRecords.filter((item) => {
       const query = search.trim().toLowerCase();
 
       const matchesSearch =
-        item.name.toLowerCase().includes(query) ||
-        item.enrollment.toLowerCase().includes(query);
+          item.name.toLowerCase().includes(query) ||
+          item.enrollment.toLowerCase().includes(query);
 
       const matchesStatus =
-        status === "all" || item.status.toLowerCase() === status;
+          status === "all" || item.status.toLowerCase() === status;
 
       const matchesMovement =
-        movement === "all" || item.movement.toLowerCase() === movement;
+          movement === "all" || item.movement.toLowerCase() === movement;
 
       return matchesSearch && matchesStatus && matchesMovement;
     });
-  }, [search, status, movement]);
+  }, [accessRecords, search, status, movement]);
+
+  const dentroAhora = accessRecords.filter(item => item.movement === "Entrada").length;
+  const accesosHoy = accessRecords.length;
+  const accesosDenegados = accessRecords.filter(item => item.status === "Denegado").length;
 
   return (
     <section className="module-page">
@@ -128,19 +114,19 @@ function Accesses() {
       <div className="module-summary-grid">
         <article>
           <span>Dentro ahora</span>
-          <strong>128</strong>
+          <strong>{dentroAhora}</strong>
           <small>Usuarios registrados</small>
         </article>
 
         <article>
           <span>Accesos hoy</span>
-          <strong>387</strong>
+          <strong>{accesosHoy}</strong>
           <small>Entradas y salidas</small>
         </article>
 
         <article>
           <span>Accesos denegados</span>
-          <strong>6</strong>
+          <strong>{accesosDenegados}</strong>
           <small>Requieren revisión</small>
         </article>
       </div>

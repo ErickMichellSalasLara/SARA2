@@ -1,40 +1,10 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useCallback } from "react";
 import ModuleHeader from "../../components/admin/modules/ModuleHeader";
 import ModuleToolbar from "../../components/admin/modules/ModuleToolbar";
 import AdminModal from "../../components/admin/modules/AdminModal";
 import ModuleStatus from "../../components/admin/modules/ModuleStatus";
 import EmptyState from "../../components/admin/modules/EmptyState";
 import "./AdminModules.css";
-
-const initialLoans = [
-  {
-    id: 1,
-    user: "Ana López",
-    resource: "Programación en Python",
-    code: "LIB-341",
-    start: "2026-07-25",
-    due: "2026-08-01",
-    status: "Activo",
-  },
-  {
-    id: 2,
-    user: "Luis Torres",
-    resource: "Diseño UX",
-    code: "LIB-112",
-    start: "2026-07-18",
-    due: "2026-07-25",
-    status: "Vencido",
-  },
-  {
-    id: 3,
-    user: "María Soto",
-    resource: "Redes de computadoras",
-    code: "LIB-283",
-    start: "2026-07-27",
-    due: "2026-08-03",
-    status: "Activo",
-  },
-];
 
 const emptyForm = {
   user: "",
@@ -45,23 +15,63 @@ const emptyForm = {
 };
 
 function Loans() {
-  const [loans, setLoans] = useState(initialLoans);
+  const [loans, setLoans] = useState([]);
+  const [metricas, setMetricas] = useState({ activos: 0, vencidos: 0, devueltos: 0 });
+
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
+
+  // 2. Obtener préstamos del backend
+  const fetchLoans = useCallback(async () => {
+    try {
+      const respuesta = await fetch("http://localhost:8000/api/prestamos/historial");
+      const data = await respuesta.json();
+
+      const prestamosFormateados = data.prestamos.map(item => ({
+        id: item.id,
+        user: item.nombre,
+        resource: item.material,
+        code: "N/A",
+        start: item.hora_prestamo,
+        due: item.hora_devolucion || "Sin fecha",
+        status: item.estatus === "Activo" ? "Activo" : "Devuelto"
+      }));
+
+      // Calculamos las métricas basándonos en la respuesta
+      const totalActivos = prestamosFormateados.filter(p => p.status === "Activo").length;
+      const totalDevueltos = prestamosFormateados.filter(p => p.status === "Devuelto").length;
+      // Nota: Si tu backend ya manda estatus "Vencido", cámbialo aquí.
+      const totalVencidos = data.prestamos.filter(p => p.estatus === "Vencido").length;
+
+      setMetricas({
+        activos: totalActivos,
+        vencidos: totalVencidos,
+        devueltos: totalDevueltos
+      });
+
+      setLoans(prestamosFormateados);
+    } catch (error) {
+      console.error("Error al cargar los préstamos:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLoans();
+  }, [fetchLoans]);
 
   const filteredLoans = useMemo(() => {
     return loans.filter((item) => {
       const query = search.trim().toLowerCase();
 
       const matchesSearch =
-        item.user.toLowerCase().includes(query) ||
-        item.resource.toLowerCase().includes(query) ||
-        item.code.toLowerCase().includes(query);
+          item.user.toLowerCase().includes(query) ||
+          item.resource.toLowerCase().includes(query) ||
+          item.code.toLowerCase().includes(query);
 
       const matchesStatus =
-        status === "all" || item.status.toLowerCase() === status;
+          status === "all" || item.status.toLowerCase() === status;
 
       return matchesSearch && matchesStatus;
     });
@@ -76,28 +86,41 @@ function Loans() {
     }));
   };
 
-  const saveLoan = (event) => {
+  const saveLoan = async (event) => {
     event.preventDefault();
 
-    setLoans((current) => [
-      ...current,
-      {
-        id: Date.now(),
-        ...form,
-        status: "Activo",
-      },
-    ]);
+    try {
+      const respuesta = await fetch("http://localhost:8000/api/prestamos/registrar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          matricula: form.user, // Asumimos que el usuario teclea su matrícula aquí
+          material: form.resource
+        })
+      });
 
-    setForm(emptyForm);
-    setIsFormOpen(false);
+      if (respuesta.ok) {
+        await fetchLoans(); // Recargamos la tabla con los datos actualizados del backend
+        setForm(emptyForm);
+        setIsFormOpen(false);
+      }
+    } catch (error) {
+      console.error("Error al registrar préstamo:", error);
+    }
   };
 
-  const returnLoan = (id) => {
-    setLoans((current) =>
-      current.map((item) =>
-        item.id === id ? { ...item, status: "Devuelto" } : item,
-      ),
-    );
+  const returnLoan = async (id) => {
+    try {
+      const respuesta = await fetch(`http://localhost:8000/api/prestamos/devolver/${id}`, {
+        method: "PUT"
+      });
+
+      if (respuesta.ok) {
+        await fetchLoans(); // Refrescamos la lista para ver el cambio de estatus
+      }
+    } catch (error) {
+      console.error("Error al devolver préstamo:", error);
+    }
   };
 
   const renewLoan = (id) => {
@@ -121,19 +144,19 @@ function Loans() {
       <div className="module-summary-grid">
         <article>
           <span>Préstamos activos</span>
-          <strong>43</strong>
+          <strong>{metricas.activos}</strong>
           <small>Recursos en circulación</small>
         </article>
 
         <article>
           <span>Vencidos</span>
-          <strong>5</strong>
+          <strong>{metricas.vencidos}</strong>
           <small>Requieren atención</small>
         </article>
 
         <article>
           <span>Devueltos hoy</span>
-          <strong>12</strong>
+          <strong>{metricas.devueltos}</strong>
           <small>Registro actualizado</small>
         </article>
       </div>
