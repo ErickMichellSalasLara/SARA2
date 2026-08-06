@@ -38,7 +38,7 @@ function AdminDashboard() {
 
                 if (resPrestamos.ok) {
                     const presData = await resPrestamos.json();
-                    realPrestamos = presData.prestamos || [];
+                    realPrestamos = presData.prestamos_activos || [];
                 }
             } catch (apiError) {
                 console.warn("No se pudo conectar con el backend, usando datos mock", apiError);
