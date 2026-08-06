@@ -56,14 +56,6 @@ function Users() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
 
-  const metricas = useMemo(() => {
-    return {
-      registrados: users.length,
-      activos: users.filter(u => u.status === "Activo").length,
-      administradores: users.filter(u => u.role === "Administrador").length
-    };
-  }, [users]);
-
   const filteredUsers = useMemo(() => {
     return users.filter((item) => {
       const query = search.trim().toLowerCase();
@@ -134,19 +126,19 @@ function Users() {
       <div className="module-summary-grid">
         <article>
           <span>Usuarios registrados</span>
-          <strong>{metricas.registrados}</strong>
+          <strong>1,248</strong>
           <small>Total institucional</small>
         </article>
 
         <article>
           <span>Usuarios activos</span>
-          <strong>{metricas.activos}</strong>
+          <strong>1,203</strong>
           <small>Con acceso habilitado</small>
         </article>
 
         <article>
           <span>Administradores</span>
-          <strong>{metricas.administradores}</strong>
+          <strong>8</strong>
           <small>Cuentas privilegiadas</small>
         </article>
       </div>

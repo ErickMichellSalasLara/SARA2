@@ -51,19 +51,7 @@ function Reservations() {
   const [reservationToCancel, setReservationToCancel] = useState(null);
   const [form, setForm] = useState(emptyForm);
 
-  const metricas = useMemo(() => {
-    const totalCubiculos = 12; // Tu límite fijo
-    const reservadosHoy = reservations.filter(r => r.status === "Reservado" || r.status === "Ocupado").length;
-    const enMantenimiento = reservations.filter(r => r.status === "Mantenimiento").length;
-
-    return {
-      disponibles: totalCubiculos - reservadosHoy - enMantenimiento,
-      reservados: reservadosHoy,
-      mantenimiento: enMantenimiento
-    };
-  }, [reservations]);
-
-  // Para cambiar entre vista de Tabla y Calendario
+  // 2. NUEVO ESTADO: Para cambiar entre vista de Tabla y Calendario
   const [viewMode, setViewMode] = useState("calendar"); // 'calendar' o 'table'
 
   const filteredReservations = useMemo(() => {
@@ -169,19 +157,19 @@ function Reservations() {
         <div className="module-summary-grid">
           <article>
             <span>Disponibles</span>
-            <strong>{metricas.disponibles}</strong>
+            <strong>3</strong>
             <small>De 12 cubículos</small>
           </article>
 
           <article>
             <span>Reservados hoy</span>
-            <strong>{metricas.reservados}</strong>
+            <strong>7</strong>
             <small>Próximas reservaciones</small>
           </article>
 
           <article>
             <span>En mantenimiento</span>
-            <strong>{metricas.mantenimiento}</strong>
+            <strong>1</strong>
             <small>No disponible</small>
           </article>
         </div>
