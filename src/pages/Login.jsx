@@ -72,6 +72,7 @@ function Login() {
           remember: formData.remember,
         }),
       });
+      console.log("Respuesta real del backend:", data);
 
       if (!data?.token || !data?.user) {
         throw new Error("La respuesta del servidor está incompleta.");
