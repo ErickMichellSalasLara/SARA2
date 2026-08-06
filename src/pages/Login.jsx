@@ -15,29 +15,6 @@ const initialForm = {
   remember: false,
 };
 
-/*
- * Credenciales temporales para desarrollo.
- * Elimina este objeto cuando la autenticación dependa completamente del backend.
- */
-const temporaryUsers = [
-  {
-    id: 1,
-    name: "Administrador S.A.R.A.",
-    email: "admin@utr.edu.mx",
-    password: "Admin123",
-    role: "admin",
-    redirectTo: "/admin",
-  },
-  {
-    id: 2,
-    name: "Alumno de prueba",
-    email: "alumno@utr.edu.mx",
-    password: "Alumno123",
-    role: "student",
-    redirectTo: "/alumno",
-  },
-];
-
 function Login() {
   const navigate = useNavigate();
 
@@ -181,7 +158,7 @@ function Login() {
         text: "",
       });
 
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("https://sara2backend-production.up.railway.app/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
