@@ -5,6 +5,7 @@ import AuthInput from "../components/auth/AuthInput";
 import PasswordInput from "../components/auth/PasswordInput";
 import AuthMessage from "../components/auth/AuthMessage";
 import AuthSubmitButton from "../components/auth/AuthSubmitButton";
+import { apiRequest } from "../services/apiClient";
 import "./Auth.css";
 
 const initialForm = {
@@ -51,7 +52,7 @@ function Register() {
     if (!emailExpression.test(formData.email.trim())) {
       return "Ingresa un correo electrónico válido.";
     }
-    if (!email.endsWith("@utr.edu.mx")) {
+    if (!formData.email.trim().toLowerCase().endsWith("@utr.edu.mx")) {
       return "Solo se permiten correos institucionales con dominio @utr.edu.mx.";
     }
     if (formData.email.trim().length < 5) {
@@ -90,23 +91,14 @@ function Register() {
       setIsLoading(true);
       setMessage({ type: "", text: "" });
 
-      const response = await fetch("/api/auth/register", {
+      await apiRequest("/api/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           name: formData.name.trim(),
           email: formData.email.trim().toLowerCase(),
           password: formData.password,
         }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "No fue posible crear la cuenta.");
-      }
 
       setMessage({
         type: "success",
@@ -160,7 +152,7 @@ function Register() {
           name="email"
           type="email"
           value={formData.email}
-          placeholder="usuario@correo.com"
+          placeholder="usuario@utr.edu.mx"
           autoComplete="email"
           onChange={handleChange}
           required

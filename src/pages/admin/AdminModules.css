@@ -538,3 +538,34 @@
     width: 100%;
   }
 }
+
+.module-view-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.module-view-actions > div {
+  display: flex;
+  gap: 10px;
+}
+
+.module-error-message {
+  padding: 12px 14px;
+  border-radius: 10px;
+  color: #8a1c1c;
+  background: #fff0f0;
+}
+
+@media (max-width: 720px) {
+  .module-view-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .module-view-actions > div {
+    flex-wrap: wrap;
+  }
+}

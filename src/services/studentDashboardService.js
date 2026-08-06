@@ -2,8 +2,9 @@ import {
   cubiclesMockData,
   getCubicleOccupancy,
 } from "../data/cubiclesMockData";
+import { apiRequest } from "./apiClient";
 
-const useMockData = import.meta.env.VITE_USE_MOCK_DATA !== "false";
+const useMockData = import.meta.env.VITE_USE_MOCK_DATA === "true";
 
 export async function getStudentDashboardData() {
   if (useMockData) {
@@ -16,28 +17,12 @@ export async function getStudentDashboardData() {
     };
   }
 
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
-
-  const response = await fetch("/api/cubicles/status", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(
-      data.message || "No fue posible consultar el estado de los cubículos.",
-    );
-  }
-
-  const cubicles = Array.isArray(data.cubicles) ? data.cubicles : [];
+  const data = await apiRequest("/api/cubicles/status");
+  const cubicles = Array.isArray(data?.cubicles) ? data.cubicles : [];
 
   return {
     cubicles,
-    occupancy: data.occupancy || getCubicleOccupancy(cubicles),
-    updatedAt: data.updatedAt || new Date().toISOString(),
+    occupancy: data?.occupancy || getCubicleOccupancy(cubicles),
+    updatedAt: data?.updatedAt || new Date().toISOString(),
   };
 }

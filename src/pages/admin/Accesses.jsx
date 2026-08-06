@@ -1,63 +1,16 @@
-import { useMemo, useState } from "react";
-import ModuleHeader from "../../components/admin/modules/ModuleHeader";
-import ModuleToolbar from "../../components/admin/modules/ModuleToolbar";
-import ModuleStatus from "../../components/admin/modules/ModuleStatus";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import EmptyState from "../../components/admin/modules/EmptyState";
+import ModuleHeader from "../../components/admin/modules/ModuleHeader";
+import ModuleStatus from "../../components/admin/modules/ModuleStatus";
+import ModuleToolbar from "../../components/admin/modules/ModuleToolbar";
+import { apiRequest } from "../../services/apiClient";
 import "./AdminModules.css";
-
-const accessRecords = [
-  {
-    id: 1,
-    name: "Ana López",
-    enrollment: "UTR230145",
-    time: "11:02",
-    movement: "Entrada",
-    reader: "Puerta principal",
-    status: "Permitido",
-  },
-  {
-    id: 2,
-    name: "Carlos Ruiz",
-    enrollment: "UTR220418",
-    time: "10:58",
-    movement: "Salida",
-    reader: "Puerta principal",
-    status: "Permitido",
-  },
-  {
-    id: 3,
-    name: "Usuario desconocido",
-    enrollment: "Sin identificar",
-    time: "10:40",
-    movement: "Entrada",
-    reader: "Lector norte",
-    status: "Denegado",
-  },
-  {
-    id: 4,
-    name: "Laura Díaz",
-    enrollment: "UTR240083",
-    time: "10:31",
-    movement: "Entrada",
-    reader: "Puerta principal",
-    status: "Permitido",
-  },
-  {
-    id: 5,
-    name: "Miguel Lara",
-    enrollment: "UTR230512",
-    time: "10:18",
-    movement: "Salida",
-    reader: "Puerta principal",
-    status: "Permitido",
-  },
-];
 
 function downloadCsv(rows) {
   const headers = [
     "Hora",
     "Usuario",
-    "Matricula",
+    "Matrícula",
     "Movimiento",
     "Lector",
     "Estado",
@@ -74,46 +27,70 @@ function downloadCsv(rows) {
 
   const csv = [headers, ...lines]
     .map((row) =>
-      row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","),
+      row.map((cell) => `"${String(cell ?? "").replaceAll('"', '""')}"`).join(","),
     )
     .join("\n");
 
-  const blob = new Blob([csv], {
-    type: "text/csv;charset=utf-8",
-  });
-
+  const blob = new Blob([`\ufeff${csv}`], { type: "text/csv;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement("a");
-
   anchor.href = url;
   anchor.download = "accesos-sara.csv";
   anchor.click();
-
   URL.revokeObjectURL(url);
 }
 
 function Accesses() {
+  const [accessRecords, setAccessRecords] = useState([]);
+  const [loadState, setLoadState] = useState("loading");
+  const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [movement, setMovement] = useState("all");
 
+  const loadAccesses = useCallback(async () => {
+    try {
+      setLoadState("loading");
+      setError("");
+      const data = await apiRequest("/api/accesos/historial");
+      setAccessRecords(Array.isArray(data?.accesos) ? data.accesos : []);
+      setLoadState("success");
+    } catch (loadError) {
+      setError(loadError instanceof Error ? loadError.message : "No fue posible cargar los accesos.");
+      setLoadState("error");
+    }
+  }, []);
+
+  useEffect(() => {
+    loadAccesses();
+  }, [loadAccesses]);
+
   const filteredRecords = useMemo(() => {
     return accessRecords.filter((item) => {
       const query = search.trim().toLowerCase();
-
       const matchesSearch =
-        item.name.toLowerCase().includes(query) ||
-        item.enrollment.toLowerCase().includes(query);
-
+        String(item.name || "").toLowerCase().includes(query) ||
+        String(item.enrollment || "").toLowerCase().includes(query);
       const matchesStatus =
-        status === "all" || item.status.toLowerCase() === status;
-
+        status === "all" || String(item.status || "").toLowerCase() === status;
       const matchesMovement =
-        movement === "all" || item.movement.toLowerCase() === movement;
-
+        movement === "all" || String(item.movement || "").toLowerCase() === movement;
       return matchesSearch && matchesStatus && matchesMovement;
     });
-  }, [search, status, movement]);
+  }, [accessRecords, search, status, movement]);
+
+  const latestMovementByUser = new Map();
+  accessRecords.forEach((item) => {
+    const key = item.enrollment;
+    if (key && item.status === "Permitido" && !latestMovementByUser.has(key)) {
+      latestMovementByUser.set(key, item.movement);
+    }
+  });
+
+  const insideNow = [...latestMovementByUser.values()].filter(
+    (value) => value === "Entrada",
+  ).length;
+  const denied = accessRecords.filter((item) => item.status === "Denegado").length;
 
   return (
     <section className="module-page">
@@ -125,22 +102,22 @@ function Accesses() {
         onAction={() => downloadCsv(filteredRecords)}
       />
 
+      {error && <p className="module-error-message">{error}</p>}
+
       <div className="module-summary-grid">
         <article>
           <span>Dentro ahora</span>
-          <strong>128</strong>
-          <small>Usuarios registrados</small>
+          <strong>{insideNow}</strong>
+          <small>Último movimiento permitido</small>
         </article>
-
         <article>
-          <span>Accesos hoy</span>
-          <strong>387</strong>
+          <span>Accesos registrados</span>
+          <strong>{accessRecords.length}</strong>
           <small>Entradas y salidas</small>
         </article>
-
         <article>
           <span>Accesos denegados</span>
-          <strong>6</strong>
+          <strong>{denied}</strong>
           <small>Requieren revisión</small>
         </article>
       </div>
@@ -164,12 +141,14 @@ function Accesses() {
           ]}
         />
 
-        {filteredRecords.length > 0 ? (
+        {loadState === "loading" ? (
+          <p>Cargando accesos...</p>
+        ) : filteredRecords.length > 0 ? (
           <div className="module-table-wrapper">
             <table className="module-table">
               <thead>
                 <tr>
-                  <th>Hora</th>
+                  <th>Fecha y hora</th>
                   <th>Usuario</th>
                   <th>Matrícula</th>
                   <th>Movimiento</th>
@@ -177,7 +156,6 @@ function Accesses() {
                   <th>Estado</th>
                 </tr>
               </thead>
-
               <tbody>
                 {filteredRecords.map((item) => (
                   <tr key={item.id}>
@@ -186,9 +164,7 @@ function Accesses() {
                     <td>{item.enrollment}</td>
                     <td>{item.movement}</td>
                     <td>{item.reader}</td>
-                    <td>
-                      <ModuleStatus value={item.status} />
-                    </td>
+                    <td><ModuleStatus value={item.status} /></td>
                   </tr>
                 ))}
               </tbody>

@@ -57,7 +57,7 @@ function StudentDashboard() {
   }
 
   const { occupancy, cubicles } = dashboardData;
-  const unavailable = occupancy.occupied + occupancy.reserved;
+  const unavailable = occupancy.occupied + occupancy.reserved + occupancy.maintenance;
 
   return (
     <div className="student-dashboard-page">
