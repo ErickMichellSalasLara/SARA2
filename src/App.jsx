@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RecoverPassword from "./pages/RecoverPassword";
 import StudentDashboard from "./pages/student/StudentDashboard.jsx";
+import "./App.css";
 
 function App() {
   return (
