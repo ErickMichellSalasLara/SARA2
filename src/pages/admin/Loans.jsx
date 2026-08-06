@@ -14,7 +14,7 @@ function Loans() {
   const [status, setStatus] = useState("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
   useEffect(() => {
     const fetchLoans = async () => {
