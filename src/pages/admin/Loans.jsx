@@ -14,11 +14,17 @@ function Loans() {
   const [status, setStatus] = useState("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const response = await fetch("https://sara2backend-production.up.railway.app/api/prestamos/prestamos/historial");
+        const response = await fetch("https://sara2backend-production.up.railway.app/api/prestamos/prestamos/historial", {
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
         if (response.ok) {
           const data = await response.json();
           setLoans(data.prestamos || []);
@@ -53,7 +59,10 @@ function Loans() {
       const newLoan = { ...form, status: "Activo" };
       const response = await fetch("https://sara2backend-production.up.railway.app/api/prestamos/prestamos/registrar", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
         body: JSON.stringify(newLoan),
       });
 
@@ -73,7 +82,12 @@ function Loans() {
 
   const returnLoan = async (id) => {
     try {
-      const response = await fetch(`https://sara2backend-production.up.railway.app/api/prestamos/prestamos/devolver/${id}`, { method: "PUT" });
+      const response = await fetch(`https://sara2backend-production.up.railway.app/api/prestamos/prestamos/devolver/${id}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
       if (response.ok) {
         setLoans((current) => current.map((item) => item.id === id ? { ...item, status: "Devuelto" } : item));
       } else {
@@ -86,7 +100,12 @@ function Loans() {
 
   const renewLoan = async (id) => {
     try {
-      const response = await fetch(`https://sara2backend-production.up.railway.app/api/prestamos/prestamos/renovar/${id}`, { method: "PUT" });
+      const response = await fetch(`https://sara2backend-production.up.railway.app/api/prestamos/prestamos/renovar/${id}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
       if (response.ok) {
         setLoans((current) => current.map((item) => item.id === id ? { ...item, status: "Renovado" } : item));
       } else {
