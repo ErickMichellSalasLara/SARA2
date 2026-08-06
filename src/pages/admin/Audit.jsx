@@ -5,13 +5,13 @@ import EmptyState from "../../components/admin/modules/EmptyState";
 import "./AdminModules.css";
 
 function Audit() {
-// NUEVO: Estado para guardar los registros reales de la API
+// NEstado para guardar los registros reales de la API
   const [auditRecords, setAuditRecords] = useState([]);
 
   const [search, setSearch] = useState("");
   const [module, setModule] = useState("all");
 
-  // NUEVO: Traer los datos al cargar la pantalla
+  // Traer los datos al cargar la pantalla
   useEffect(() => {
     const fetchAuditoria = async () => {
       try {
@@ -33,14 +33,13 @@ function Audit() {
     return auditRecords.filter((item) => {
       const query = search.trim().toLowerCase();
 
-      // Ajusta las propiedades (item.admin, item.action) al nombre real que te devuelva Python
-      const matchesSearch =
-          (item.admin || "").toLowerCase().includes(query) ||
-          (item.action || "").toLowerCase().includes(query) ||
-          (item.record || "").toLowerCase().includes(query);
+        const matchesSearch =
+            (item.admin || "").toLowerCase().includes(query) ||
+            (item.action || "").toLowerCase().includes(query) ||
+            (item.record || "").toLowerCase().includes(query);
 
-      const matchesModule =
-          module === "all" || (item.module || "").toLowerCase() === module;
+        const matchesModule =
+            module === "all" || (item.module || "").toLowerCase() === module;
 
       return matchesSearch && matchesModule;
     });

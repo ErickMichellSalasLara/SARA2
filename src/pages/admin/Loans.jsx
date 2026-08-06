@@ -66,12 +66,12 @@ function Loans() {
       const query = search.trim().toLowerCase();
 
       const matchesSearch =
-          item.user.toLowerCase().includes(query) ||
-          item.resource.toLowerCase().includes(query) ||
-          item.code.toLowerCase().includes(query);
+          (item.user || "").toLowerCase().includes(query) ||
+          (item.resource || "").toLowerCase().includes(query) ||
+          (item.code || "").toLowerCase().includes(query);
 
       const matchesStatus =
-          status === "all" || item.status.toLowerCase() === status;
+          status === "all" || (item.status || "").toLowerCase() === status;
 
       return matchesSearch && matchesStatus;
     });
