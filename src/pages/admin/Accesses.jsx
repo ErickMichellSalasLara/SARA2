@@ -83,15 +83,16 @@ function Accesses() {
     return accessRecords.filter((item) => {
       const query = search.trim().toLowerCase();
 
+      // Le agregamos (item.propiedad || "") a cada uno para protegerlos si vienen vacíos
       const matchesSearch =
-          item.name.toLowerCase().includes(query) ||
-          item.enrollment.toLowerCase().includes(query);
+          (item.name || "").toLowerCase().includes(query) ||
+          (item.enrollment || "").toLowerCase().includes(query);
 
       const matchesStatus =
-          status === "all" || item.status.toLowerCase() === status;
+          status === "all" || (item.status || "").toLowerCase() === status;
 
       const matchesMovement =
-          movement === "all" || item.movement.toLowerCase() === movement;
+          movement === "all" || (item.movement || "").toLowerCase() === movement;
 
       return matchesSearch && matchesStatus && matchesMovement;
     });
