@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
-import MetricCard from "../../components/admin/MetricCard";
-import AffluenceChart from "../../components/admin/AffluenceChart";
-import OccupancyPanel from "../../components/admin/OccupancyPanel";
 import ActivityTable from "../../components/admin/ActivityTable";
-import AlertsPanel from "../../components/admin/AlertsPanel";
-import QuickActions from "../../components/admin/QuickActions";
 import AdminIcon from "../../components/admin/AdminIcon";
+import AffluenceChart from "../../components/admin/AffluenceChart";
+import AlertsPanel from "../../components/admin/AlertsPanel";
+import MetricCard from "../../components/admin/MetricCard";
+import OccupancyPanel from "../../components/admin/OccupancyPanel";
+import QuickActions from "../../components/admin/QuickActions";
 import { getAdminDashboardData } from "../../services/dashboardService";
 
 function AdminDashboard() {
@@ -17,13 +17,14 @@ function AdminDashboard() {
     try {
       setStatus("loading");
       setError("");
-
-      const data = await getAdminDashboardData();
-
-      setDashboardData(data);
+      setDashboardData(await getAdminDashboardData());
       setStatus("success");
     } catch (loadError) {
-      setError(loadError.message);
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : "No fue posible cargar el dashboard.",
+      );
       setStatus("error");
     }
   }, []);
@@ -46,7 +47,6 @@ function AdminDashboard() {
       <div className="admin-error-state" role="alert">
         <h2>No fue posible cargar el dashboard</h2>
         <p>{error}</p>
-
         <button type="button" onClick={loadDashboard}>
           <AdminIcon name="refresh" />
           Reintentar

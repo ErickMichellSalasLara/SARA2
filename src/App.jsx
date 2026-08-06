@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import RecoverPassword from "./pages/RecoverPassword";
 import NotFound from "./pages/NotFound";
+import LegalPage from "./pages/LegalPage";
 import BackEndSARA from "./components/BackEndSARA.jsx";
 
 // Protección de rutas
@@ -78,6 +79,16 @@ function App() {
         <Route
           path="/prueba-api"
           element={<BackEndSARA />}
+        />
+
+        <Route
+          path="/terminos"
+          element={<LegalPage type="terms" />}
+        />
+
+        <Route
+          path="/privacidad"
+          element={<LegalPage type="privacy" />}
         />
 
         {/* =========================

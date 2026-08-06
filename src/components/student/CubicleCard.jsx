@@ -15,7 +15,7 @@ function CubicleCard({ cubicle }) {
     status === "occupied"
       ? "Horario de uso"
       : status === "reserved"
-        ? "Próxima reserva"
+        ? "Horario reservado"
         : cubicle.nextReservation
           ? "Próxima reserva"
           : "Disponibilidad";
@@ -23,7 +23,9 @@ function CubicleCard({ cubicle }) {
   const scheduleValue =
     status === "occupied"
       ? cubicle.currentSchedule || "Actualmente en uso"
-      : cubicle.nextReservation || "Sin reservas próximas";
+      : status === "reserved"
+        ? cubicle.currentSchedule || cubicle.nextReservation || "Reserva vigente"
+        : cubicle.nextReservation || "Sin reservas próximas";
 
   return (
     <article className={`student-cubicle-card is-${status}`}>

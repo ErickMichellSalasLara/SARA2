@@ -85,3 +85,47 @@ body,
     transition: none;
   }
 }
+
+/* Páginas legales enlazadas desde el registro */
+.legal-page {
+  min-height: calc(100vh - 4rem);
+}
+
+.legal-page__eyebrow {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12rem;
+  text-transform: uppercase;
+}
+
+.legal-page__sections {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
+
+.legal-page__sections article {
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.legal-page__sections h2 {
+  font-size: 1.05rem;
+}
+
+.legal-page__notice {
+  padding: 1rem 1.25rem;
+  border-left: 3px solid rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+@media screen and (max-width: 800px) {
+  .legal-page__sections {
+    grid-template-columns: 1fr;
+  }
+}
