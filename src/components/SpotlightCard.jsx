@@ -1,34 +1,26 @@
-import Button from './Button'
+import { useVisibility } from './useVisibility';
 
-function SpotlightCard({
-  imageSrc,
-  imageAlt,
-  imagePosition = 'center center',
-  title,
-  description,
-  linkTo = '/generic',
-  buttonText = 'Conocer más',
-}) {
+function SpotlightCard({ imageSrc, title, description, linkTo, buttonText }) {
+  // Hook dentro del componente de la tarjeta
+  const [ref, isVisible] = useVisibility(0.25);
+
   return (
-    <section>
-      <span className="image">
-        <img
-          src={imageSrc}
-          alt={imageAlt}
-          data-position={imagePosition}
-          loading="lazy"
-        />
-      </span>
-
-      <div className="content">
-        <div className="inner">
-          <h2>{title}</h2>
-          <p>{description}</p>
-          <Button to={linkTo} text={buttonText} />
+      <section ref={ref}>
+        {/* Animación Slide de la imagen */}
+        <div className={`image sara-anim slide-in-left ${isVisible ? 'is-visible' : ''}`}>
+          <img src={imageSrc} alt="" />
         </div>
-      </div>
-    </section>
-  )
+
+        {/* Animación Pop del texto */}
+        <div className={`content sara-anim pop ${isVisible ? 'is-visible' : ''}`}>
+          <div className="inner">
+            <h2>{title}</h2>
+            <p>{description}</p>
+            {/* Botón */}
+          </div>
+        </div>
+      </section>
+  );
 }
 
-export default SpotlightCard
+export default SpotlightCard;
