@@ -2,7 +2,7 @@
 
 export const registrarAuditoria = async (accion, modulo, registro) => {
     try {
-        await fetch("sara2backend-production.up.railway.app/api/auditoria/registrar", {
+        await fetch("https://sara2backend-production.up.railway.app/api/auditoria/registrar", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
