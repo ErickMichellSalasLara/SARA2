@@ -1,13 +1,52 @@
+import { useEffect, useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { getStoredUser, isAdminUser } from "../utils/auth";
+import { apiRequest } from "../services/apiClient";
+import {
+  clearSession,
+  getStoredToken,
+  isAdminUser,
+  updateStoredUser,
+} from "../utils/auth";
 
 function RequireStudent() {
   const location = useLocation();
-  const token =
-    localStorage.getItem("token") || sessionStorage.getItem("token");
-  const user = getStoredUser();
+  const [state, setState] = useState({ status: "loading", user: null });
 
-  if (!token || !user) {
+  useEffect(() => {
+    let active = true;
+
+    const validateSession = async () => {
+      if (!getStoredToken()) {
+        if (active) setState({ status: "unauthenticated", user: null });
+        return;
+      }
+
+      try {
+        const data = await apiRequest("/api/auth/me");
+        updateStoredUser(data.user);
+        if (active) setState({ status: "authenticated", user: data.user });
+      } catch {
+        clearSession();
+        if (active) setState({ status: "unauthenticated", user: null });
+      }
+    };
+
+    validateSession();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (state.status === "loading") {
+    return (
+      <div className="admin-loading-state" role="status">
+        <span className="admin-spinner" />
+        <p>Verificando sesión...</p>
+      </div>
+    );
+  }
+
+  if (state.status === "unauthenticated") {
     return (
       <Navigate
         to="/login"
@@ -17,7 +56,7 @@ function RequireStudent() {
     );
   }
 
-  if (isAdminUser(user)) {
+  if (isAdminUser(state.user)) {
     return <Navigate to="/admin" replace />;
   }
 

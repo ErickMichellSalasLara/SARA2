@@ -1,7 +1,16 @@
 export const cubiclesMockData = [
   {
     id: 1,
-    name: "Oceania",
+    name: "América",
+    location: "Planta baja",
+    capacity: 8,
+    status: "maintenance",
+    currentSchedule: null,
+    nextReservation: null,
+  },
+  {
+    id: 2,
+    name: "Oceanía",
     location: "Planta baja",
     capacity: 8,
     status: "available",
@@ -9,17 +18,8 @@ export const cubiclesMockData = [
     nextReservation: "13:00 - 14:00",
   },
   {
-    id: 2,
-    name: "Asia",
-    location: "Planta baja",
-    capacity: 8,
-    status: "occupied",
-    currentSchedule: "10:00 - 11:30",
-    nextReservation: null,
-  },
-  {
     id: 3,
-    name: "Africa",
+    name: "Europa",
     location: "Planta baja",
     capacity: 8,
     status: "reserved",
@@ -28,11 +28,11 @@ export const cubiclesMockData = [
   },
   {
     id: 4,
-    name: "America",
+    name: "Asia",
     location: "Planta baja",
     capacity: 8,
-    status: "maintenance",
-    currentSchedule: null,
+    status: "occupied",
+    currentSchedule: "10:00 - 11:30",
     nextReservation: null,
   },
 ];

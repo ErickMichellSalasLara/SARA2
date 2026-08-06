@@ -4,6 +4,7 @@ import AuthLayout from "../components/auth/AuthLayout";
 import AuthInput from "../components/auth/AuthInput";
 import AuthMessage from "../components/auth/AuthMessage";
 import AuthSubmitButton from "../components/auth/AuthSubmitButton";
+import { apiRequest } from "../services/apiClient";
 import "./Auth.css";
 
 function RecoverPassword() {
@@ -63,24 +64,12 @@ function RecoverPassword() {
         text: "",
       });
 
-      const response = await fetch("/api/auth/forgot-password", {
+      const data = await apiRequest("/api/auth/forgot-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
         }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.message ||
-            "No fue posible procesar la recuperación de contraseña.",
-        );
-      }
 
       setRequestSent(true);
 

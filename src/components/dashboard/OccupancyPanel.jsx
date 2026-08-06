@@ -9,7 +9,7 @@ function OccupancyPanel({
   const maintenance = Number(occupancy?.maintenance ?? 0);
 
   const total = occupied + reserved + available + maintenance;
-  const unavailable = occupied + reserved;
+  const unavailable = occupied + reserved + maintenance;
   const percentage = total ? Math.round((unavailable / total) * 100) : 0;
 
   return (
