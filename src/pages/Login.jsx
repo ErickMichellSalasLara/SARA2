@@ -15,6 +15,29 @@ const initialForm = {
   remember: false,
 };
 
+/*
+ * Credenciales temporales para desarrollo.
+ * Elimina este objeto cuando la autenticación dependa completamente del backend.
+ */
+const temporaryUsers = [
+  {
+    id: 1,
+    name: "Administrador S.A.R.A.",
+    email: "admin@utr.edu.mx",
+    password: "Admin123",
+    role: "admin",
+    redirectTo: "/admin",
+  },
+  {
+    id: 2,
+    name: "Alumno de prueba",
+    email: "alumno@utr.edu.mx",
+    password: "Alumno123",
+    role: "student",
+    redirectTo: "/alumno",
+  },
+];
+
 function Login() {
   const navigate = useNavigate();
 
@@ -67,8 +90,8 @@ function Login() {
 
   const saveSession = ({ token, user }) => {
     const storage = formData.remember
-        ? localStorage
-        : sessionStorage;
+      ? localStorage
+      : sessionStorage;
 
     /*
      * Evita conservar simultáneamente dos sesiones diferentes.
@@ -80,6 +103,41 @@ function Login() {
 
     storage.setItem("token", token);
     storage.setItem("user", JSON.stringify(user));
+  };
+
+  const tryTemporaryLogin = (email, password) => {
+    const temporaryUser = temporaryUsers.find(
+      (user) =>
+        user.email === email &&
+        user.password === password,
+    );
+
+    if (!temporaryUser) {
+      return false;
+    }
+
+    const userData = {
+      id: temporaryUser.id,
+      name: temporaryUser.name,
+      email: temporaryUser.email,
+      role: temporaryUser.role,
+    };
+
+    saveSession({
+      token: `temporary-${temporaryUser.role}-token`,
+      user: userData,
+    });
+
+    setMessage({
+      type: "success",
+      text: `Bienvenido, ${temporaryUser.name}.`,
+    });
+
+    navigate(temporaryUser.redirectTo, {
+      replace: true,
+    });
+
+    return true;
   };
 
   const handleSubmit = async (event) => {
@@ -99,6 +157,22 @@ function Login() {
     const email = formData.email.trim().toLowerCase();
     const password = formData.password;
 
+    /*
+     * Primero intenta autenticar con las cuentas temporales.
+     */
+    const temporaryLoginSucceeded = tryTemporaryLogin(
+      email,
+      password,
+    );
+
+    if (temporaryLoginSucceeded) {
+      return;
+    }
+
+    /*
+     * Si no coincide con una cuenta temporal,
+     * intenta iniciar sesión mediante el backend.
+     */
     try {
       setIsLoading(true);
 
@@ -107,7 +181,7 @@ function Login() {
         text: "",
       });
 
-      const response = await fetch("https://sara2backend-production.up.railway.app/api/auth/login", {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,14 +196,14 @@ function Login() {
 
       if (!response.ok) {
         throw new Error(
-            data.detail ||
+          data.message ||
             "Correo o contraseña incorrectos.",
         );
       }
 
       if (!data.token || !data.user) {
         throw new Error(
-            "La respuesta del servidor está incompleta.",
+          "La respuesta del servidor está incompleta.",
         );
       }
 
@@ -139,7 +213,7 @@ function Login() {
       });
 
       const userRole = String(
-          data.user.role || "",
+        data.user.role || "",
       ).toLowerCase();
 
       const administratorRoles = [
@@ -166,9 +240,9 @@ function Login() {
       setMessage({
         type: "error",
         text:
-            error instanceof Error
-                ? error.message
-                : "Ocurrió un error inesperado.",
+          error instanceof Error
+            ? error.message
+            : "Ocurrió un error inesperado.",
       });
     } finally {
       setIsLoading(false);
@@ -176,85 +250,85 @@ function Login() {
   };
 
   return (
-      <AuthLayout
-          badge="Acceso institucional"
-          title="Bienvenido a S.A.R.A."
-          description="Consulta la disponibilidad de cubículos o administra los servicios del Learning Commons desde un solo lugar."
-          features={[
-            "Consulta de cubículos en tiempo real.",
-            "Acceso mediante correo institucional.",
-            "Experiencia adaptada según el tipo de cuenta.",
-          ]}
-          formEyebrow="Inicio de sesión"
-          formTitle="Accede a tu cuenta"
-          formDescription="Ingresa tus credenciales institucionales."
-          icon="S"
+    <AuthLayout
+      badge="Acceso institucional"
+      title="Bienvenido a S.A.R.A."
+      description="Consulta la disponibilidad de cubículos o administra los servicios del Learning Commons desde un solo lugar."
+      features={[
+        "Consulta de cubículos en tiempo real.",
+        "Acceso mediante correo institucional.",
+        "Experiencia adaptada según el tipo de cuenta.",
+      ]}
+      formEyebrow="Inicio de sesión"
+      formTitle="Accede a tu cuenta"
+      formDescription="Ingresa tus credenciales institucionales."
+      icon="S"
+    >
+      <form
+        className="auth-form"
+        onSubmit={handleSubmit}
+        noValidate
       >
-        <form
-            className="auth-form"
-            onSubmit={handleSubmit}
-            noValidate
-        >
-          <AuthInput
-              id="login-email"
-              label="Correo institucional"
-              name="email"
-              type="email"
-              value={formData.email}
-              placeholder="usuario@utr.edu.mx"
-              autoComplete="email"
+        <AuthInput
+          id="login-email"
+          label="Correo institucional"
+          name="email"
+          type="email"
+          value={formData.email}
+          placeholder="usuario@utr.edu.mx"
+          autoComplete="email"
+          onChange={handleChange}
+          required
+        />
+
+        <PasswordInput
+          id="login-password"
+          label="Contraseña"
+          name="password"
+          value={formData.password}
+          placeholder="Ingresa tu contraseña"
+          autoComplete="current-password"
+          onChange={handleChange}
+          required
+          minLength={8}
+        />
+
+        <div className="auth-options">
+          <label className="auth-checkbox">
+            <input
+              name="remember"
+              type="checkbox"
+              checked={formData.remember}
               onChange={handleChange}
-              required
-          />
+            />
 
-          <PasswordInput
-              id="login-password"
-              label="Contraseña"
-              name="password"
-              value={formData.password}
-              placeholder="Ingresa tu contraseña"
-              autoComplete="current-password"
-              onChange={handleChange}
-              required
-              minLength={8}
-          />
+            <span>Recordar sesión</span>
+          </label>
 
-          <div className="auth-options">
-            <label className="auth-checkbox">
-              <input
-                  name="remember"
-                  type="checkbox"
-                  checked={formData.remember}
-                  onChange={handleChange}
-              />
-
-              <span>Recordar sesión</span>
-            </label>
-
-            <Link to="/recuperar-password">
-              ¿Olvidaste tu contraseña?
-            </Link>
-          </div>
-
-          <AuthMessage message={message} />
-
-          <AuthSubmitButton
-              isLoading={isLoading}
-              loadingText="Verificando..."
-          >
-            Iniciar sesión
-          </AuthSubmitButton>
-        </form>
-
-        <div className="auth-switch">
-          <span>¿No tienes una cuenta?</span>
-          <Link to="/registro">Crear una cuenta</Link>
+          <Link to="/recuperar-password">
+            ¿Olvidaste tu contraseña?
+          </Link>
         </div>
 
-        <Link to="/" className="auth-back">
-          ← Regresar al inicio
-        </Link>
-      </AuthLayout>
+        <AuthMessage message={message} />
+
+        <AuthSubmitButton
+          isLoading={isLoading}
+          loadingText="Verificando..."
+        >
+          Iniciar sesión
+        </AuthSubmitButton>
+      </form>
+
+      <div className="auth-switch">
+        <span>¿No tienes una cuenta?</span>
+        <Link to="/registro">Crear una cuenta</Link>
+      </div>
+
+      <Link to="/" className="auth-back">
+        ← Regresar al inicio
+      </Link>
+    </AuthLayout>
   );
 }
 

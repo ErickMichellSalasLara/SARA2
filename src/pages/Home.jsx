@@ -1,18 +1,25 @@
-import Button from '../components/Button'
-import Footer from '../components/Footer'
-import Sidebar from '../components/Sidebar'
-import SpotlightCard from '../components/SpotlightCard'
-import pic01 from '../images/pic01.jpg'
-import pic02 from '../images/pic02.jpg'
-import pic03 from '../images/pic03.jpg'
+import Button from "../components/Button";
+import Footer from "../components/Footer";
+import Sidebar from "../components/Sidebar";
+import SpotlightCard from "../components/SpotlightCard";
+import usePageAnimations from "../hooks/usePageAnimations";
+import pic01 from "../images/pic01.jpg";
+import pic02 from "../images/pic02.jpg";
+import pic03 from "../images/pic03.jpg";
 
 function Home() {
+  usePageAnimations();
+
   return (
     <>
       <Sidebar />
 
       <div id="wrapper">
-        <section id="intro" className="wrapper style1 fullscreen fade-up">
+        <section
+          id="intro"
+          className="wrapper style1 fullscreen fade-up"
+          data-reveal
+        >
           <div className="inner">
             <h1>S.A.R.A. 2.0</h1>
             <p>
@@ -32,7 +39,7 @@ function Home() {
           </div>
         </section>
 
-        <section id="one" className="wrapper style2 spotlights">
+        <section id="one" className="wrapper style2 spotlights" data-reveal>
           <SpotlightCard
             imageSrc={pic01}
             imageAlt="Control de acceso mediante una plataforma digital"
@@ -64,7 +71,7 @@ function Home() {
           />
         </section>
 
-        <section id="two" className="wrapper style3 fade-up">
+        <section id="two" className="wrapper style3 fade-up" data-reveal>
           <div className="inner">
             <h2>¿Qué hace S.A.R.A.?</h2>
             <p>
@@ -76,7 +83,7 @@ function Home() {
           </div>
         </section>
 
-        <section id="three" className="wrapper style1 fade-up">
+        <section id="three" className="wrapper style1 fade-up" data-reveal>
           <div className="inner">
             <h2>Contacto con el equipo</h2>
             <p>
@@ -91,7 +98,7 @@ function Home() {
 
       <Footer footerClass="wrapper style1-alt" />
     </>
-  )
+  );
 }
 
-export default Home
+export default Home;
