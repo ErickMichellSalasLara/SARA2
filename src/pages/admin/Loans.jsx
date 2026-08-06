@@ -6,7 +6,13 @@ import ModuleStatus from "../../components/admin/modules/ModuleStatus";
 import EmptyState from "../../components/admin/modules/EmptyState";
 import "./AdminModules.css";
 
-const emptyForm = { user: "", resource: "", code: "", start: "", due: "" };
+
+const emptyForm = {
+  user_id: "",
+  material_id: "",
+  loan_date: "",
+  due_date: ""
+};
 
 function Loans() {
   const [loans, setLoans] = useState([]);
@@ -56,14 +62,20 @@ function Loans() {
   const saveLoan = async (event) => {
     event.preventDefault();
     try {
-      const newLoan = { ...form, status: "Activo" };
+      const payload = {
+        user_id: parseInt(form.user_id, 10),
+        material_id: parseInt(form.material_id, 10),
+        loan_date: form.loan_date,
+        due_date: form.due_date
+      };
+
       const response = await fetch("https://sara2backend-production.up.railway.app/api/prestamos/prestamos/registrar", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(newLoan),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
