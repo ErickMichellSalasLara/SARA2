@@ -18,7 +18,7 @@ function Loans() {
   useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const response = await fetch("https://sara2backend-production.up.railway.app/api/prestamos");
+        const response = await fetch("https://sara2backend-production.up.railway.app/api/prestamos/prestamos/historial");
         if (response.ok) {
           const data = await response.json();
           setLoans(data.prestamos || []);
@@ -51,7 +51,7 @@ function Loans() {
     event.preventDefault();
     try {
       const newLoan = { ...form, status: "Activo" };
-      const response = await fetch("https://sara2backend-production.up.railway.app/api/prestamos/registrar", {
+      const response = await fetch("https://sara2backend-production.up.railway.app/api/prestamos/prestamos/registrar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newLoan),
@@ -73,7 +73,7 @@ function Loans() {
 
   const returnLoan = async (id) => {
     try {
-      const response = await fetch(`https://sara2backend-production.up.railway.app/api/prestamos/devolver/${id}`, { method: "PUT" });
+      const response = await fetch(`https://sara2backend-production.up.railway.app/api/prestamos/prestamos/devolver/${id}`, { method: "PUT" });
       if (response.ok) {
         setLoans((current) => current.map((item) => item.id === id ? { ...item, status: "Devuelto" } : item));
       } else {
@@ -86,7 +86,7 @@ function Loans() {
 
   const renewLoan = async (id) => {
     try {
-      const response = await fetch(`https://sara2backend-production.up.railway.app/api/prestamos/renovar/${id}`, { method: "PUT" });
+      const response = await fetch(`https://sara2backend-production.up.railway.app/api/prestamos/prestamos/renovar/${id}`, { method: "PUT" });
       if (response.ok) {
         setLoans((current) => current.map((item) => item.id === id ? { ...item, status: "Renovado" } : item));
       } else {
