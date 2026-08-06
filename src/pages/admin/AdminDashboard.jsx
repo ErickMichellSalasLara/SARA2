@@ -8,6 +8,7 @@ import QuickActions from "../../components/admin/QuickActions";
 import AdminIcon from "../../components/admin/AdminIcon";
 import { getAdminDashboardData } from "../../services/dashboardService";
 import "./Admin.css"
+import "./AdminModules.css"
 
 function AdminDashboard() {
   const [dashboardData, setDashboardData] = useState(null);
