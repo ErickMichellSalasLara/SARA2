@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import ModuleHeader from "../../components/admin/modules/ModuleHeader";
 import ModuleToolbar from "../../components/admin/modules/ModuleToolbar";
 import AdminModal from "../../components/admin/modules/AdminModal";
@@ -8,136 +8,117 @@ import EmptyState from "../../components/admin/modules/EmptyState";
 import CalendarView from "../../components/admin/modules/CalendarView";
 import "./AdminModules.css";
 
-const initialReservations = [
-  {
-    id: 1,
-    room: "Cubículo 01",
-    user: "Ana López",
-    date: "2026-08-01",
-    time: "10:00 - 11:30",
-    status: "Ocupado",
-  },
-  {
-    id: 2,
-    room: "Cubículo 02",
-    user: "Carlos Ruiz",
-    date: "2026-08-01",
-    time: "11:00 - 12:00",
-    status: "Reservado",
-  },
-  {
-    id: 3,
-    room: "Cubículo 04",
-    user: "Mantenimiento",
-    date: "2026-08-01",
-    time: "Todo el día",
-    status: "Mantenimiento",
-  },
-];
-
-const emptyForm = {
-  room: "",
-  user: "",
-  date: "",
-  startTime: "",
-  endTime: "",
-};
+const emptyForm = { room: "", user: "", date: "", startTime: "", endTime: "" };
 
 function Reservations() {
-  const [reservations, setReservations] = useState(initialReservations);
+  const [reservations, setReservations] = useState([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [reservationToCancel, setReservationToCancel] = useState(null);
   const [form, setForm] = useState(emptyForm);
+  const [viewMode, setViewMode] = useState("calendar");
 
-  // 2. NUEVO ESTADO: Para cambiar entre vista de Tabla y Calendario
-  const [viewMode, setViewMode] = useState("calendar"); // 'calendar' o 'table'
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const response = await fetch("https://sara2backend-production.up.railway.app/api/calendario");
+        if (response.ok) {
+          const data = await response.json();
+          setReservations(data.reservaciones || []);
+        } else {
+          setReservations([]);
+        }
+      } catch (error) {
+        console.error("Error al conectar con la base de datos:", error);
+        setReservations([]);
+      }
+    };
+    fetchReservations();
+  }, []);
 
   const filteredReservations = useMemo(() => {
     return reservations.filter((item) => {
       const query = search.trim().toLowerCase();
-
-      const matchesSearch =
-          item.room.toLowerCase().includes(query) ||
-          item.user.toLowerCase().includes(query);
-
-      const matchesStatus =
-          status === "all" || item.status.toLowerCase() === status;
-
+      const matchesSearch = item.room.toLowerCase().includes(query) || item.user.toLowerCase().includes(query);
+      const matchesStatus = status === "all" || item.status.toLowerCase() === status;
       return matchesSearch && matchesStatus;
     });
   }, [reservations, search, status]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
-    setForm((current) => ({
-      ...current,
-      [name]: value,
-    }));
+    setForm((current) => ({ ...current, [name]: value }));
   };
 
-  const saveReservation = (event) => {
+  const saveReservation = async (event) => {
     event.preventDefault();
-
-    setReservations((current) => [
-      ...current,
-      {
-        id: Date.now(),
+    try {
+      const newReservation = {
         room: form.room,
         user: form.user,
         date: form.date,
         time: `${form.startTime} - ${form.endTime}`,
         status: "Reservado",
-      },
-    ]);
+      };
 
-    setForm(emptyForm);
-    setIsFormOpen(false);
+      const response = await fetch("https://sara2backend-production.up.railway.app/api/calendario/reservar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReservation),
+      });
+
+      if (response.ok) {
+        const createdReservation = await response.json();
+        setReservations((current) => [...current, { id: createdReservation.id, ...newReservation }]);
+      } else {
+        console.error("No se pudo guardar la reserva en la base de datos");
+      }
+    } catch (error) {
+      console.error("Error al guardar reserva:", error);
+    } finally {
+      setForm(emptyForm);
+      setIsFormOpen(false);
+    }
   };
 
-  const confirmCancellation = () => {
+  const confirmCancellation = async () => {
     if (!reservationToCancel) return;
 
-    setReservations((current) =>
-        current.map((item) =>
-            item.id === reservationToCancel.id
-                ? { ...item, status: "Cancelado" }
-                : item,
-        ),
-    );
+    try {
+      const response = await fetch(`https://sara2backend-production.up.railway.app/api/calendario/cancelar/${reservationToCancel.id}`, {
+        method: "PUT",
+      });
 
-    setReservationToCancel(null);
+      if (response.ok) {
+        setReservations((current) =>
+            current.map((item) =>
+                item.id === reservationToCancel.id ? { ...item, status: "Cancelado" } : item
+            )
+        );
+      } else {
+        console.error("No se pudo cancelar la reserva en la base de datos");
+      }
+    } catch (error) {
+      console.error("Error al cancelar reserva:", error);
+    } finally {
+      setReservationToCancel(null);
+    }
   };
 
-  // NUEVA FUNCIÓN PARA DESCARGAR EL EXCEL
   const handleDownloadExcel = async () => {
     try {
-      // Agregamos https:// y la ruta /api/reportes/reservas/excel
-      const response = await fetch("https://sara2backend-production.up.railway.app/api/reportes/reservas/excel"); 
-
-      if (!response.ok) {
-        throw new Error("Error al descargar el archivo");
-      }
-
-      // Convertimos la respuesta en un "Blob" (un archivo binario)
+      const response = await fetch("https://sara2backend-production.up.railway.app/api/reportes/reservas/excel");
+      if (!response.ok) throw new Error("Error al descargar el archivo");
       const blob = await response.blob();
-
-      // Creamos una URL temporal en el navegador para descargar ese archivo
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      // Le ponemos el nombre con el que se descargará
       link.setAttribute("download", "Reporte_Reservas_SARA.xlsx");
-
       document.body.appendChild(link);
-      link.click(); // Simulamos un clic
-
-      // Limpiamos la memoria
+      link.click();
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
-
     } catch (error) {
       console.error("Hubo un problema con la descarga: ", error);
       alert("No se pudo descargar el reporte de Excel.");
@@ -154,68 +135,21 @@ function Reservations() {
             onAction={() => setIsFormOpen(true)}
         />
 
-        <div className="module-summary-grid">
-          <article>
-            <span>Disponibles</span>
-            <strong>3</strong>
-            <small>De 12 cubículos</small>
-          </article>
-
-          <article>
-            <span>Reservados hoy</span>
-            <strong>7</strong>
-            <small>Próximas reservaciones</small>
-          </article>
-
-          <article>
-            <span>En mantenimiento</span>
-            <strong>1</strong>
-            <small>No disponible</small>
-          </article>
-        </div>
-
-        {/* 3. CONMUTADOR DE VISTAS Y BOTÓN DE REPORTE */}
         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px" }}>
-
-          {/* Contenedor izquierdo: Vistas */}
           <div style={{ display: "flex", gap: "10px" }}>
-            <button
-                type="button"
-                className={viewMode === "calendar" ? "module-primary-button" : "module-link-button"}
-                onClick={() => setViewMode("calendar")}
-            >
-              Vista Calendario
-            </button>
-            <button
-                type="button"
-                className={viewMode === "table" ? "module-primary-button" : "module-link-button"}
-                onClick={() => setViewMode("table")}
-            >
-              Vista Tabla
-            </button>
+            <button type="button" className={viewMode === "calendar" ? "module-primary-button" : "module-link-button"} onClick={() => setViewMode("calendar")}>Vista Calendario</button>
+            <button type="button" className={viewMode === "table" ? "module-primary-button" : "module-link-button"} onClick={() => setViewMode("table")}>Vista Tabla</button>
           </div>
-
-          {/* Contenedor derecho: Botón de Excel */}
           <div>
-            <button
-                type="button"
-                className="module-primary-button"
-                style={{ backgroundColor: "#107c41", borderColor: "#107c41" }} // Color verde estilo Excel
-                onClick={handleDownloadExcel}
-            >
-              📊 Descargar Reporte (Excel)
-            </button>
+            <button type="button" className="module-primary-button" style={{ backgroundColor: "#107c41", borderColor: "#107c41" }} onClick={handleDownloadExcel}>📊 Descargar Reporte (Excel)</button>
           </div>
         </div>
 
-        {/* 4. RENDERIZADO CONDICIONAL DE ACUERDO A LA SELECCIÓN */}
         {viewMode === "calendar" ? (
             <div className="module-card">
               <CalendarView
                   onDateClick={(fechaSeleccionada) => {
-                    // 1. Llenamos el formulario con la fecha que el usuario seleccionó
                     setForm({ ...emptyForm, date: fechaSeleccionada });
-                    // 2. Abrimos el modal
                     setIsFormOpen(true);
                   }}
               />
@@ -235,43 +169,18 @@ function Reservations() {
                     { value: "mantenimiento", label: "Mantenimiento" },
                   ]}
               />
-
               {filteredReservations.length > 0 ? (
                   <div className="module-table-wrapper">
                     <table className="module-table">
                       <thead>
-                      <tr>
-                        <th>Cubículo</th>
-                        <th>Usuario</th>
-                        <th>Fecha</th>
-                        <th>Horario</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                      </tr>
+                      <tr><th>Cubículo</th><th>Usuario</th><th>Fecha</th><th>Horario</th><th>Estado</th><th>Acciones</th></tr>
                       </thead>
-
                       <tbody>
                       {filteredReservations.map((item) => (
                           <tr key={item.id}>
-                            <td>{item.room}</td>
-                            <td>{item.user}</td>
-                            <td>{item.date}</td>
-                            <td>{item.time}</td>
+                            <td>{item.room}</td><td>{item.user}</td><td>{item.date}</td><td>{item.time}</td><td><ModuleStatus value={item.status} /></td>
                             <td>
-                              <ModuleStatus value={item.status} />
-                            </td>
-                            <td>
-                              <button
-                                  type="button"
-                                  className="module-link-button"
-                                  disabled={
-                                      item.status === "Cancelado" ||
-                                      item.status === "Mantenimiento"
-                                  }
-                                  onClick={() => setReservationToCancel(item)}
-                              >
-                                Cancelar
-                              </button>
+                              <button type="button" className="module-link-button" disabled={item.status === "Cancelado" || item.status === "Mantenimiento"} onClick={() => setReservationToCancel(item)}>Cancelar</button>
                             </td>
                           </tr>
                       ))}
@@ -284,12 +193,7 @@ function Reservations() {
             </div>
         )}
 
-        {/* MODAL Y DIÁLOGO DE CONFIRMACIÓN PERMANECEN IGUAL */}
-        <AdminModal
-            title="Nueva reserva"
-            isOpen={isFormOpen}
-            onClose={() => setIsFormOpen(false)}
-        >
+        <AdminModal title="Nueva reserva" isOpen={isFormOpen} onClose={() => setIsFormOpen(false)}>
           <form className="module-form" onSubmit={saveReservation}>
             <label>
               Cubículo
@@ -301,61 +205,15 @@ function Reservations() {
                 <option value="Asia">Asia</option>
               </select>
             </label>
-
-            <label>
-              Usuario
-              <input
-                  name="user"
-                  value={form.user}
-                  onChange={handleChange}
-                  placeholder="Nombre o matrícula"
-                  required
-              />
-            </label>
-
-            <label>
-              Fecha
-              <input
-                  name="date"
-                  type="date"
-                  value={form.date}
-                  onChange={handleChange}
-                  required
-              />
-            </label>
-
+            <label>Usuario <input name="user" value={form.user} onChange={handleChange} placeholder="Nombre o matrícula" required /></label>
+            <label>Fecha <input name="date" type="date" value={form.date} onChange={handleChange} required /></label>
             <div className="module-form-grid">
-              <label>
-                Hora inicial
-                <input
-                    name="startTime"
-                    type="time"
-                    value={form.startTime}
-                    onChange={handleChange}
-                    required
-                />
-              </label>
-
-              <label>
-                Hora final
-                <input
-                    name="endTime"
-                    type="time"
-                    value={form.endTime}
-                    onChange={handleChange}
-                    required
-                />
-              </label>
+              <label>Hora inicial <input name="startTime" type="time" value={form.startTime} onChange={handleChange} required /></label>
+              <label>Hora final <input name="endTime" type="time" value={form.endTime} onChange={handleChange} required /></label>
             </div>
-
             <div className="module-form-actions">
-              <button type="button" onClick={() => setIsFormOpen(false)}>
-                Cancelar
-              </button>
-
-              <button type="submit" className="module-primary-button">
-                Guardar reserva
-              </button>
+              <button type="button" onClick={() => setIsFormOpen(false)}>Cancelar</button>
+              <button type="submit" className="module-primary-button">Guardar reserva</button>
             </div>
           </form>
         </AdminModal>
@@ -363,9 +221,7 @@ function Reservations() {
         <ConfirmDialog
             isOpen={Boolean(reservationToCancel)}
             title="Cancelar reservación"
-            message={`¿Deseas cancelar la reservación de ${
-                reservationToCancel?.room ?? ""
-            }?`}
+            message={`¿Deseas cancelar la reservación de ${reservationToCancel?.room ?? ""}?`}
             confirmLabel="Cancelar reservación"
             onConfirm={confirmCancellation}
             onClose={() => setReservationToCancel(null)}
